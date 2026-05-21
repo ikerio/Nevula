@@ -1,0 +1,99 @@
+/* =========================================================================
+   NEVULA — Shared text-legibility scrims + cinematic scanline overlay
+   Ported from inline <style> in NevulaWebsiteDesign/landing/cinematic.html.
+   Each chapter's text column sits in front of the particle field; a soft
+   radial scrim keeps headlines readable while particles drift behind.
+   ========================================================================= */
+
+.opening-text,
+.ch1-head,
+.ch2-head,
+.ch4-side,
+.ch5-head,
+.closing-text {
+  position: relative;
+  isolation: isolate;
+}
+
+/* Left-anchored text columns get scrim biased to the left */
+.ch1-head::before,
+.ch2-head::before {
+  content: "";
+  position: absolute;
+  inset: -32px -56px;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(70% 80% at 30% 50%,
+    rgba(246, 247, 251, 0.94) 0%,
+    rgba(246, 247, 251, 0.78) 40%,
+    rgba(246, 247, 251, 0.45) 70%,
+    rgba(246, 247, 251, 0.0)  100%);
+}
+
+/* Right-column text (ch-4) — bias scrim to the LEFT side of the element
+   (where the text starts within the right column) and keep it from
+   extending right into the chapter rail. */
+.ch4-side::before {
+  content: "";
+  position: absolute;
+  inset: -32px -8px -32px -64px;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(70% 80% at 25% 50%,
+    rgba(246, 247, 251, 0.94) 0%,
+    rgba(246, 247, 251, 0.78) 40%,
+    rgba(246, 247, 251, 0.45) 70%,
+    rgba(246, 247, 251, 0.0)  100%);
+}
+
+/* ch-5 centered head */
+.ch5-head::before {
+  content: "";
+  position: absolute;
+  inset: -32px -56px;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(60% 70% at 50% 50%,
+    rgba(246, 247, 251, 0.92) 0%,
+    rgba(246, 247, 251, 0.78) 35%,
+    rgba(246, 247, 251, 0.45) 65%,
+    rgba(246, 247, 251, 0.0)  100%);
+}
+
+/* Opening + Closing — full-bleed soft ellipse, no visible edge.
+   Much larger inset + multi-stop falloff so the boundary fades completely
+   into the page bg before the scrim ends. */
+.opening-text::before,
+.closing-text::before {
+  content: "";
+  position: absolute;
+  inset: -200px -260px;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(ellipse 58% 58% at 50% 50%,
+    rgba(246, 247, 251, 0.88) 0%,
+    rgba(246, 247, 251, 0.72) 25%,
+    rgba(246, 247, 251, 0.48) 50%,
+    rgba(246, 247, 251, 0.22) 72%,
+    rgba(246, 247, 251, 0.06) 88%,
+    rgba(246, 247, 251, 0.0)  100%);
+}
+
+/* Cinematic scanline overlay (very subtle) */
+.nv-cinematic-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    0deg, transparent 0, transparent 2px,
+    rgba(10, 15, 31, 0.012) 2px, rgba(10, 15, 31, 0.012) 3px
+  );
+  mix-blend-mode: multiply;
+}
+
+/* Mark SVG sizing helper (used in nav .brand .mark and chapter-3 mock) */
+.nv-mark-svg {
+  width: 100%;
+  height: 100%;
+}

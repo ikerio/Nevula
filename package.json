@@ -1,0 +1,22 @@
+{
+  "name": "nevula-landing",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Nevula cinematic landing — Vite + TypeScript + three.js port",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "gsap": "^3.15.0",
+    "postprocessing": "^6.36.0",
+    "three": "^0.170.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.170.0",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.11"
+  }
+}

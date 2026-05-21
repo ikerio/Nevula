@@ -1,0 +1,96 @@
+/* Chapter 2 — Operational Intelligence
+   Headline + lede LEFT (mirrors ch-1). Constellation breathes in the right
+   two-thirds. Six process tiles in a strip along the bottom. */
+
+.ch-2 .layout {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: minmax(380px, 540px) 1fr;
+  align-items: center;
+  padding: 88px 8vw 220px;
+  gap: 48px;
+}
+.ch-2 .ch2-head {
+  text-align: left;
+  transform: translateY(calc((1 - var(--i, 0)) * 16px));
+}
+.ch-2 .ch2-head .nv-eyebrow { justify-content: flex-start; }
+.ch-2 .ch2-head .nv-title { text-align: left; }
+.ch-2 .ch2-head .nv-lede {
+  margin: 24px 0 0;
+  text-align: left;
+  max-width: 460px;
+}
+
+/* Stat strip — 6 process tiles along the bottom edge */
+.ch-2 .ch2-strip {
+  position: absolute;
+  bottom: 56px;
+  left: 8vw;
+  right: 8vw;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+  z-index: 3;
+}
+.ch-2 .stat-card {
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-sm);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 13px 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 14px 28px -22px rgba(10, 15, 31, 0.20);
+  opacity: calc(var(--i, 0) * 1);
+  transition: transform 280ms var(--ease-out);
+}
+.ch-2 .stat-card:nth-child(1) { transition-delay: 40ms;  transform: translateY(calc((1 - var(--i, 0)) * 14px)); }
+.ch-2 .stat-card:nth-child(2) { transition-delay: 100ms; transform: translateY(calc((1 - var(--i, 0)) * 18px)); }
+.ch-2 .stat-card:nth-child(3) { transition-delay: 160ms; transform: translateY(calc((1 - var(--i, 0)) * 22px)); }
+.ch-2 .stat-card:nth-child(4) { transition-delay: 220ms; transform: translateY(calc((1 - var(--i, 0)) * 26px)); }
+.ch-2 .stat-card:nth-child(5) { transition-delay: 280ms; transform: translateY(calc((1 - var(--i, 0)) * 30px)); }
+.ch-2 .stat-card:nth-child(6) { transition-delay: 340ms; transform: translateY(calc((1 - var(--i, 0)) * 34px)); }
+.ch-2 .stat-card .lbl {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--orange-500);
+}
+.ch-2 .stat-card h5 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--ink-100);
+  line-height: 1.2;
+}
+.ch-2 .stat-card p {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 1.5;
+  color: var(--ink-400);
+}
+
+@media (max-width: 820px) {
+  .ch-2 .layout {
+    display: block;
+    padding: 96px 24px 64px;
+  }
+  .ch-2 .ch2-strip {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    right: auto;
+    grid-template-columns: 1fr 1fr;
+    margin-top: 32px;
+  }
+}

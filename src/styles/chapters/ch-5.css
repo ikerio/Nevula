@@ -1,0 +1,426 @@
+/* Chapter 5 — Founders
+   Faithful port of the standalone study at `NevulaWebsiteDesign/Founder
+   Card _standalone_.html`. The card is a single flat element — NO
+   top/bottom split. Index, role pill, and caption are ABSOLUTE OVERLAYS
+   over the portrait (white text on the cobalt-tinted gradient). The
+   orange rail on the left edge is a `::before` pseudo-element with a
+   `box-shadow` glow — that glow is the "orange fringe overlay" that
+   bleeds inward on hover. */
+
+.ch-5 .layout {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 76px 6vw 56px;
+  gap: 36px;
+}
+
+.ch-5 .ch5-head {
+  text-align: center;
+  max-width: 760px;
+  transform: translateY(calc((1 - var(--i, 0)) * 16px));
+}
+.ch-5 .ch5-head .nv-eyebrow { justify-content: center; }
+.ch-5 .ch5-head .nv-title   { text-align: center; }
+.ch-5 .ch5-head .nv-lede {
+  margin: 20px auto 0;
+  text-align: center;
+  max-width: 560px;
+}
+
+.ch-5 .founder-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  width: 100%;
+  max-width: 1280px;
+}
+
+/* ------------------------------------------------------------------
+   Wrapper — owns the chapter-entry stagger so the card's transform
+   is free to animate hover lift without clashing.
+   ------------------------------------------------------------------ */
+.ch-5 .fc-wrap {
+  opacity: var(--i, 0);
+  transform: translateY(calc((1 - var(--i, 0)) * (16px + var(--n, 0) * 6px)));
+  transition:
+    transform 380ms var(--ease-out),
+    opacity 320ms var(--ease-out);
+  transition-delay: calc(var(--n, 0) * 90ms);
+}
+
+/* ------------------------------------------------------------------
+   Card — glass surface (translucent white + backdrop blur).
+   aspect-ratio locks outer dimensions so the hover-state metric
+   expansion can't push the grid row taller and re-center .layout.
+   ------------------------------------------------------------------ */
+.ch-5 .fc {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  aspect-ratio: 9 / 16;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-md);
+  backdrop-filter: blur(14px) saturate(1.04);
+  -webkit-backdrop-filter: blur(14px) saturate(1.04);
+  overflow: hidden;
+  isolation: isolate;
+  cursor: pointer;
+  color: var(--ink-100);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.7) inset,
+    0 18px 32px -24px rgba(10, 15, 31, 0.22);
+  transition:
+    transform 360ms cubic-bezier(.2, .7, .2, 1),
+    box-shadow 360ms cubic-bezier(.2, .7, .2, 1),
+    border-color 220ms ease-out;
+}
+
+/* The orange rail + glow. `box-shadow: 0 0 12px var(--orange-500)`
+   bleeds inward into the card body — THAT'S the orange fringe overlay
+   the concept defines. scaleY 0 → 1 with origin-top makes the rail
+   slide in from the top edge on hover. */
+.ch-5 .fc::before {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0; left: 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--orange-500), rgba(255, 102, 0, 0));
+  box-shadow: 0 0 12px var(--orange-500);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 380ms cubic-bezier(.2, .7, .2, 1);
+  pointer-events: none;
+  z-index: 4;
+}
+.ch-5 .fc:hover::before,
+.ch-5 .fc:focus-visible::before {
+  transform: scaleY(1);
+}
+
+/* Hover + keyboard focus — same visual response. */
+.ch-5 .fc:hover,
+.ch-5 .fc:focus-visible {
+  transform: translateY(-6px);
+  border-color: var(--line-mid);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.7) inset,
+    0 30px 50px -28px rgba(10, 15, 31, 0.32),
+    0 6px 14px -10px rgba(10, 15, 31, 0.18);
+}
+.ch-5 .fc:focus-visible {
+  outline: none;
+  border-color: rgba(255, 102, 0, 0.55);
+}
+
+/* ------------------------------------------------------------------
+   Portrait — cobalt-tinted gradient. Contains all the overlay chrome
+   (index, role pill, caption, sheen, placeholder). `flex: 1 1 0` lets
+   it shrink when .meta grows (hover metrics) so the card's outer
+   aspect-ratio holds.
+   ------------------------------------------------------------------ */
+.ch-5 .fc .portrait {
+  position: relative;
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: hidden;
+  background: linear-gradient(180deg,
+    rgba(0, 82, 156, 0.10),
+    rgba(0, 82, 156, 0.02));
+}
+
+/* Bottom scrim — darkens the lower portion of the portrait so the
+   caption row stays legible on any future imagery. */
+.ch-5 .fc .portrait::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,
+    rgba(10, 15, 31, 0) 55%,
+    rgba(10, 15, 31, 0.42) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Portrait placeholder — dashed circle + "PORTRAIT PENDING" stamp.
+   Sits behind everything; swaps out when a real <img> drops in. */
+.ch-5 .fc .pmissing {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  pointer-events: none;
+}
+.ch-5 .fc .pmissing-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px dashed var(--ink-400);
+  opacity: 0.55;
+}
+.ch-5 .fc .pmissing-label {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-300);
+}
+
+/* Index numeral — top-left overlay, white with shadow + orange tick
+   underneath (the tick has its own glow). */
+.ch-5 .fc .pix {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  z-index: 2;
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-weight: 300;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 2px 14px rgba(10, 15, 31, 0.40);
+}
+.ch-5 .fc .pix::after {
+  content: "";
+  display: block;
+  width: 22px;
+  height: 1px;
+  background: var(--orange-500);
+  box-shadow: 0 0 8px var(--orange-500);
+  margin-top: 6px;
+}
+
+/* Role pill — top-right overlay, translucent dark with backdrop blur. */
+.ch-5 .fc .prole {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 2;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.94);
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(10, 15, 31, 0.32);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Caption — bottom overlay. "Nevula · Dossier" left, year right.
+   Subtly drops in further on hover (translateY 4 → 0). */
+.ch-5 .fc .pcap {
+  position: absolute;
+  bottom: 12px;
+  left: 14px;
+  right: 14px;
+  z-index: 2;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.78);
+  transform: translateY(4px);
+  opacity: 0.78;
+  transition:
+    transform 320ms cubic-bezier(.2, .7, .2, 1),
+    opacity 320ms;
+}
+.ch-5 .fc:hover .pcap,
+.ch-5 .fc:focus-visible .pcap {
+  transform: translateY(0);
+  opacity: 1;
+}
+.ch-5 .fc .pcap .dot {
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--orange-500);
+  box-shadow: 0 0 6px var(--orange-500);
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+/* Sweep sheen — diagonal gradient that translates once on hover. */
+.ch-5 .fc .sweep {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg,
+    rgba(255, 255, 255, 0) 35%,
+    rgba(255, 255, 255, 0.18) 50%,
+    rgba(255, 255, 255, 0) 65%);
+  transform: translateX(-110%);
+  z-index: 3;
+  pointer-events: none;
+}
+.ch-5 .fc:hover .sweep,
+.ch-5 .fc:focus-visible .sweep {
+  animation: fc-sweep 900ms cubic-bezier(.2, .7, .2, 1) forwards;
+}
+@keyframes fc-sweep {
+  from { transform: translateX(-110%); }
+  to   { transform: translateX(110%); }
+}
+
+/* ------------------------------------------------------------------
+   Meta — solid block under the portrait. Name + tag, hover-revealed
+   metrics, then foot row with past companies + open affordance.
+   ------------------------------------------------------------------ */
+.ch-5 .fc .meta {
+  flex-shrink: 0;
+  padding: 16px 18px 18px;
+  display: flex;
+  flex-direction: column;
+}
+.ch-5 .fc .name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 500;
+  letter-spacing: -0.018em;
+  color: var(--ink-100);
+  line-height: 1.1;
+}
+.ch-5 .fc .tag {
+  margin: 4px 0 0;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  color: var(--ink-300);
+  line-height: 1.35;
+}
+
+/* Hover-revealed metrics — left-bordered tickers, no boxed cells.
+   max-height + margin-top animate to slide them in above the foot. */
+.ch-5 .fc .metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 0;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition:
+    max-height 380ms cubic-bezier(.2, .7, .2, 1),
+    opacity 240ms ease-out 60ms,
+    margin-top 380ms cubic-bezier(.2, .7, .2, 1);
+}
+.ch-5 .fc:hover .metrics,
+.ch-5 .fc:focus-visible .metrics {
+  max-height: 50px;
+  opacity: 1;
+  margin-top: 14px;
+}
+.ch-5 .fc .metrics .m {
+  border-left: 1px solid var(--line-mid);
+  padding-left: 10px;
+}
+.ch-5 .fc .metrics .m .v {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--ink-100);
+  line-height: 1;
+  font-feature-settings: "tnum";
+}
+.ch-5 .fc .metrics .m .l {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-400);
+  margin-top: 4px;
+}
+
+/* Foot — past companies (truncate with ellipsis when too long) on the
+   left, OPEN ↗ on the right. Hairline divider above. */
+.ch-5 .fc .foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line-hair);
+}
+.ch-5 .fc .past {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-300);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ch-5 .fc .past .sep {
+  color: var(--line-mid);
+  margin: 0 5px;
+}
+.ch-5 .fc .open {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-400);
+  pointer-events: none;
+  transition: color 220ms ease-out, gap 220ms ease-out;
+}
+.ch-5 .fc:hover .open,
+.ch-5 .fc:focus-visible .open {
+  color: var(--orange-500);
+  gap: 8px;
+}
+.ch-5 .fc .open svg {
+  width: 11px;
+  height: 11px;
+  transition: transform 320ms cubic-bezier(.2, .7, .2, 1);
+}
+.ch-5 .fc:hover .open svg,
+.ch-5 .fc:focus-visible .open svg {
+  transform: translate(2px, -2px);
+}
+
+/* ------------------------------------------------------------------
+   Responsive — 2×2 below 1080px so cards keep workable width.
+   ------------------------------------------------------------------ */
+@media (max-width: 1080px) {
+  .ch-5 .founder-grid {
+    grid-template-columns: 1fr 1fr;
+    max-width: 720px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ch-5 .fc .sweep { animation: none !important; }
+  .ch-5 .fc,
+  .ch-5 .fc .metrics,
+  .ch-5 .fc .open,
+  .ch-5 .fc::before { transition: none !important; }
+}

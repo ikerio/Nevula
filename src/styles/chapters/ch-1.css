@@ -1,0 +1,97 @@
+/* Chapter 1 — What Is Nevula?
+   Particle "city" lives right-of-center (offset via JS).
+   Content + use-case stack live on the LEFT. */
+
+.ch-1 .layout {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  /* Asymmetric grid: title column hugs left, particle has air on right */
+  grid-template-columns: minmax(380px, 540px) 1fr;
+  grid-template-rows: 1fr;
+  align-items: center;
+  padding: 88px 8vw 64px;
+  gap: 48px;
+}
+.ch-1 .ch1-head {
+  text-align: left;
+  transform: translateY(calc((1 - var(--i, 0)) * 16px));
+}
+.ch-1 .ch1-head .nv-eyebrow { justify-content: flex-start; }
+.ch-1 .ch1-head .nv-title { text-align: left; }
+.ch-1 .ch1-head .nv-lede {
+  margin: 24px 0 0;
+  text-align: left;
+  max-width: 460px;
+}
+
+/* Use-case strip — 4 vertical-orientation pill cards along the bottom */
+.ch-1 .use-strip {
+  position: absolute;
+  bottom: 56px;
+  left: 8vw;
+  right: 8vw;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  transform: translateY(calc((1 - var(--i, 0)) * 28px));
+}
+.ch-1 .use-card {
+  background: rgba(255, 255, 255, 0.84);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-sm);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 14px 28px -22px rgba(10, 15, 31, 0.20);
+}
+.ch-1 .use-card .ix {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--orange-500);
+}
+.ch-1 .use-card h5 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--ink-100);
+  line-height: 1.2;
+}
+.ch-1 .use-card p {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  line-height: 1.5;
+  color: var(--ink-400);
+}
+
+/* Stagger entries */
+.ch-1 .use-card { opacity: calc(var(--i, 0) * 1); transition: transform 280ms var(--ease-out); }
+.ch-1 .use-card:nth-child(1) { transition-delay: 40ms;  transform: translateY(calc((1 - var(--i, 0)) * 18px)); }
+.ch-1 .use-card:nth-child(2) { transition-delay: 120ms; transform: translateY(calc((1 - var(--i, 0)) * 22px)); }
+.ch-1 .use-card:nth-child(3) { transition-delay: 200ms; transform: translateY(calc((1 - var(--i, 0)) * 26px)); }
+.ch-1 .use-card:nth-child(4) { transition-delay: 280ms; transform: translateY(calc((1 - var(--i, 0)) * 30px)); }
+
+@media (max-width: 820px) {
+  .ch-1 .layout {
+    display: block;
+    padding: 96px 24px 64px;
+  }
+  .ch-1 .use-strip {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    right: auto;
+    grid-template-columns: 1fr 1fr;
+    margin-top: 32px;
+  }
+}

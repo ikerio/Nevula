@@ -1,0 +1,20 @@
+/* Chapter 0 — Opening (centered, sparse) */
+
+.ch-0 .layout {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.ch-0 .opening-text {
+  text-align: center;
+  max-width: 880px;
+  padding: 0 48px;
+  /* Title rises during entry */
+  transform: translateY(calc((1 - var(--i, 0)) * 22px));
+}
+
+.ch-0 .opening-text .nv-eyebrow {
+  justify-content: center;
+}

@@ -1,0 +1,333 @@
+/* =========================================================================
+   NEVULA — Pre-opening intro overlay
+   Sits above the particle canvas while the page loads; auto-plays the
+   "WELCOME TO" line + neVula letter reveal in file order, then waits for
+   first user input (wheel / touch / key / click). On exit, the entire
+   wordmark dissolves through an SVG turbulence filter while the particle
+   field (already at logo state, uOpacity=0) fades in to take over. Chapter
+   0 content stays hidden until the dissolve completes.
+   ========================================================================= */
+
+/* ----- Body-level: hide the cinematic chrome AND chapter content while the
+   intro is up. `intro-active` stays on the body for the full exit so the
+   chapters don't show through the dissolving wordmark — main.ts removes it
+   only after the dissolve finishes. ----- */
+body.intro-active .nv-cinematic-overlay {
+  opacity: 0;
+}
+body.intro-active .nv-nav,
+body.intro-active .nv-rail,
+body.intro-active .nv-audio,
+body.intro-active .nv-scroll-hint {
+  opacity: 0;
+  pointer-events: none;
+}
+body.intro-active .nv-stage {
+  opacity: 0;
+  pointer-events: none;
+  /* Hard-block visibility too, not just opacity — the wordmark filter
+     pipeline can momentarily punch through transparent layers during the
+     dissolve and we don't want chapter text peeking through. */
+  visibility: hidden;
+}
+
+/* Smooth fade once `intro-active` lifts: chapters + chrome surface over
+   ~0.9s. The chapter children use their own --i var for staggered intra-
+   chapter reveal; this transition just brings the stage parent up. */
+.nv-stage,
+.nv-rail,
+.nv-audio,
+.nv-scroll-hint,
+.nv-cinematic-overlay {
+  transition: opacity 0.9s ease-out, visibility 0s linear 0s;
+}
+.nv-nav {
+  transition: opacity 0.9s ease-out;
+}
+/* Symmetric delay on visibility so it flips back to `visible` immediately
+   when intro-active is removed. */
+body.intro-active .nv-stage {
+  transition: opacity 0.9s ease-out, visibility 0s linear 0.9s;
+}
+
+/* ----- Intro overlay ----- */
+
+.intro-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.55s ease-out;
+}
+.intro-overlay.is-mounted {
+  opacity: 1;
+}
+
+/* Ambient atmospherics — orbits, dot grids, constellation, plus marks,
+   indicators, scanner. Fixed full-bleed behind everything else in the
+   overlay. Color comes from `currentColor` on each group, so a single
+   `color` here drives them all. Layer-specific opacities pick out the
+   visual hierarchy. Each major group also runs its own slow animation
+   so the atmosphere feels alive without competing with the wordmark. */
+.intro-atmos {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  color: var(--ink-300);
+  opacity: 0;
+  transition: opacity 1.4s ease-out 0.4s;
+  overflow: visible;
+}
+.intro-overlay.is-mounted .intro-atmos {
+  opacity: 1;
+}
+.intro-overlay.is-exiting .intro-atmos {
+  opacity: 0;
+  transition-duration: 0.55s;
+  transition-delay: 0s;
+}
+
+/* Per-group opacities — biased so the closer / more "diegetic" elements
+   read first and the giant background arcs stay barely-there texture. */
+.intro-atmos .atmos-big-arc       { opacity: 0.08; }
+.intro-atmos .atmos-orbits        { opacity: 0.13; transform-origin: 1820px 540px; animation: atmos-rotate-cw 110s linear infinite; }
+.intro-atmos .atmos-grid          { opacity: 0.20; }
+.intro-atmos .atmos-grid-small    { opacity: 0.16; }
+.intro-atmos .atmos-constellation { opacity: 0.16; transform-origin: 1500px 880px; animation: atmos-drift 22s ease-in-out infinite; }
+.intro-atmos .atmos-plus          { opacity: 0.30; }
+.intro-atmos .atmos-satellite     { opacity: 0.18; transform-origin: 180px 380px; animation: atmos-rotate-ccw 38s linear infinite; }
+.intro-atmos .atmos-indicator     { opacity: 0.32; }
+.intro-atmos .atmos-scanner       { opacity: 0.10; animation: atmos-scan 18s ease-in-out infinite; }
+
+/* The HUGE upper-left arc rotates around its (off-screen) center so the
+   visible portion sweeps slowly across the viewport. */
+.intro-atmos .atmos-big-arc {
+  transform-origin: -400px -200px;
+  animation: atmos-rotate-cw 240s linear infinite;
+}
+
+/* Orbiting markers ride opposite directions on the outer rings — their
+   transform-origins sit at the ring center. */
+.intro-atmos .atmos-orbiter-a {
+  transform-origin: 1820px 540px;
+  animation: atmos-rotate-ccw 18s linear infinite;
+}
+.intro-atmos .atmos-orbiter-b {
+  transform-origin: 1820px 540px;
+  animation: atmos-rotate-cw 26s linear infinite;
+}
+
+/* Constellation nodes twinkle on staggered offsets — random-looking
+   pulse via `nth-child` with different durations and delays. */
+.intro-atmos .atmos-node {
+  animation: atmos-twinkle 4.2s ease-in-out infinite;
+}
+.intro-atmos .atmos-node:nth-of-type(1) { animation-delay: 0s;    animation-duration: 3.6s; }
+.intro-atmos .atmos-node:nth-of-type(2) { animation-delay: 0.7s;  animation-duration: 4.4s; }
+.intro-atmos .atmos-node:nth-of-type(3) { animation-delay: 1.4s;  animation-duration: 5.2s; }
+.intro-atmos .atmos-node:nth-of-type(4) { animation-delay: 2.1s;  animation-duration: 3.8s; }
+.intro-atmos .atmos-node:nth-of-type(5) { animation-delay: 0.4s;  animation-duration: 4.8s; }
+.intro-atmos .atmos-node:nth-of-type(6) { animation-delay: 2.8s;  animation-duration: 5.6s; }
+.intro-atmos .atmos-node:nth-of-type(7) { animation-delay: 1.1s;  animation-duration: 4.0s; }
+.intro-atmos .atmos-node:nth-of-type(8) { animation-delay: 3.3s;  animation-duration: 4.6s; }
+
+/* Plus marks pulse opacity in sequence — staggered via data-i so the
+   visual rhythm is irregular rather than synchronized. */
+.intro-atmos .plus-mark {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: atmos-pulse 4.8s ease-in-out infinite;
+}
+.intro-atmos .plus-mark[data-i="0"] { animation-delay: 0s; }
+.intro-atmos .plus-mark[data-i="1"] { animation-delay: 0.6s; }
+.intro-atmos .plus-mark[data-i="2"] { animation-delay: 1.2s; }
+.intro-atmos .plus-mark[data-i="3"] { animation-delay: 1.8s; }
+.intro-atmos .plus-mark[data-i="4"] { animation-delay: 2.4s; }
+.intro-atmos .plus-mark[data-i="5"] { animation-delay: 3.0s; }
+.intro-atmos .plus-mark[data-i="6"] { animation-delay: 3.6s; }
+
+/* ----- Keyframes -----
+   Rotations stay in SVG user-space (deg around the element's
+   transform-origin). Twinkle/pulse animate opacity. Scanner translates
+   horizontally on a wide cycle then snaps back. */
+@keyframes atmos-rotate-cw {
+  to { transform: rotate(360deg); }
+}
+@keyframes atmos-rotate-ccw {
+  to { transform: rotate(-360deg); }
+}
+@keyframes atmos-twinkle {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.15; }
+}
+@keyframes atmos-pulse {
+  0%, 100% { opacity: 1; }
+  45%      { opacity: 0.1; }
+  55%      { opacity: 0.1; }
+}
+@keyframes atmos-drift {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-14px); }
+}
+@keyframes atmos-scan {
+  0%   { transform: translateX(-100%); opacity: 0; }
+  20%  { opacity: 0.10; }
+  80%  { opacity: 0.10; }
+  100% { transform: translateX(100%); opacity: 0; }
+}
+
+/* Hand control back to the user's motion preference — the whole intro
+   becomes still if reduced-motion is requested. */
+@media (prefers-reduced-motion: reduce) {
+  .intro-atmos *,
+  .intro-atmos {
+    animation: none !important;
+  }
+}
+
+/* WELCOME TO — anchored to the upper-left, large. Switched from the mono
+   stack to var(--font-display) (Manrope) at a thin weight so the line
+   harmonizes with the wordmark's geometry rather than reading as code/
+   instrumentation type. The wordmark's V mark sits right-of-center of
+   the SVG so a centered welcome line would feel off-axis; left weight
+   up top balances the V's rightward, lower mass. */
+.intro-welcome {
+  position: absolute;
+  left: clamp(32px, 8vw, 140px);
+  top: clamp(64px, 14vh, 160px);
+  transform: translateX(-24px);
+  max-width: 40vw;
+  font-family: var(--font-display);
+  font-size: clamp(34px, 4.4vw, 68px);
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  line-height: 1.05;
+  text-transform: uppercase;
+  color: var(--ink-200);
+  opacity: 0;
+  transition:
+    opacity 0.7s ease-out 0.15s,
+    transform 0.85s var(--ease-out) 0.15s;
+}
+.intro-overlay.is-mounted .intro-welcome {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Wordmark — centered in the viewport, ignoring the welcome block. */
+.intro-wordmark {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.intro-wordmark svg {
+  width: min(64vw, 900px);
+  max-height: 52vh;
+  height: auto;
+  display: block;
+  overflow: visible;
+  /* The SVG dissolve filter runs the whole pipeline — ripple displacement,
+     particle jitter, alpha threshold mask, AND the color wash that
+     desaturates/lifts/flattens contrast as the dissolve progresses.
+     At rest, every animated primitive is at its identity value so the
+     wordmark renders crisply. The exit tween in intro-overlay.ts walks
+     each one toward its end state in parallel. */
+  filter: url(#nv-dissolve);
+  /* Centered transform for the parallel scale/opacity tween during exit. */
+  transform-origin: 50% 50%;
+  will-change: opacity, transform, filter;
+}
+
+/* Each letter starts hidden + slightly below. Staggered transition-delay
+   based on data-order (0 = first to reveal). The wrapper has no SVG
+   transform attribute, so CSS transforms apply cleanly on top of the
+   inner letter's positioning matrix. */
+.intro-letter {
+  opacity: 0;
+  transform: translateY(18px);
+  transform-origin: center;
+  transform-box: fill-box;
+  transition:
+    opacity 0.6s ease-out,
+    transform 0.85s var(--ease-out);
+}
+.intro-overlay.is-mounted .intro-letter {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Reveal order n → e → V → u → l → a (data-order 0..5). Base delay 0.85s so
+   "WELCOME TO" lands cleanly before letters begin. 0.25s stagger between
+   letters — gives the eye time to track each appearance without dragging. */
+.intro-letter[data-order="0"] { transition-delay: 0.85s; }
+.intro-letter[data-order="1"] { transition-delay: 1.10s; }
+.intro-letter[data-order="2"] { transition-delay: 1.35s; } /* V */
+.intro-letter[data-order="3"] { transition-delay: 1.60s; }
+.intro-letter[data-order="4"] { transition-delay: 1.85s; }
+.intro-letter[data-order="5"] { transition-delay: 2.10s; }
+
+.intro-hint {
+  position: absolute;
+  bottom: clamp(28px, 6vh, 64px);
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--ink-400);
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  transition: opacity 0.9s ease-out;
+}
+.intro-hint .line {
+  width: 1px;
+  height: 28px;
+  background: linear-gradient(180deg, var(--ink-400), transparent);
+  animation: intro-hint-drop 2.6s ease-in-out infinite;
+}
+@keyframes intro-hint-drop {
+  0%   { transform: scaleY(0.2); transform-origin: top; }
+  60%  { transform: scaleY(1);   transform-origin: top; }
+  61%  { transform-origin: bottom; }
+  100% { transform: scaleY(0);   transform-origin: bottom; }
+}
+.intro-overlay.show-hint .intro-hint {
+  opacity: 1;
+}
+
+/* ----- Exit transition.
+   The welcome text + scroll hint use plain CSS transitions (they don't
+   need to sync with anything). The wordmark dissolve (opacity + feDisp
+   scale) is driven by GSAP in intro-overlay.ts so it can be cross-timed
+   with the particle field tween in main.ts. ----- */
+.intro-overlay.is-exiting {
+  pointer-events: none;
+}
+.intro-overlay.is-exiting .intro-welcome {
+  opacity: 0;
+  transform: translateX(-40px);
+  transition-duration: 0.55s;
+  transition-delay: 0s;
+}
+.intro-overlay.is-exiting .intro-hint {
+  opacity: 0;
+  transition-duration: 0.35s;
+}
+
+/* After everything has faded, the overlay vacates from the layout so it
+   can no longer intercept pointer events or render anything. */
+.intro-overlay.is-exited {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0s linear 0s, visibility 0s linear 1.2s;
+}

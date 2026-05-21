@@ -1,0 +1,120 @@
+/* Chapter — Manifesto / Ecosystem (editorial type, ecosystem appeal).
+   Centered editorial body, three pillars below. */
+
+.ch-mfst .layout {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 96px 48px;
+}
+
+.ch-mfst .mfst {
+  text-align: center;
+  max-width: 1080px;
+  position: relative;
+  isolation: isolate;
+  transform: translateY(calc((1 - var(--i, 0)) * 18px));
+}
+.ch-mfst .mfst::before {
+  content: "";
+  position: absolute;
+  inset: -160px -240px;
+  background: radial-gradient(ellipse 58% 58% at 50% 50%,
+    rgba(246, 247, 251, 0.88) 0%,
+    rgba(246, 247, 251, 0.72) 25%,
+    rgba(246, 247, 251, 0.48) 50%,
+    rgba(246, 247, 251, 0.22) 72%,
+    rgba(246, 247, 251, 0.06) 88%,
+    rgba(246, 247, 251, 0.0)  100%);
+  z-index: -1;
+  pointer-events: none;
+}
+.ch-mfst .mfst .nv-eyebrow { justify-content: center; }
+
+.ch-mfst .mfst-body {
+  margin: 28px auto 0;
+  font-family: var(--font-display);
+  font-size: clamp(28px, 3.2vw, 46px);
+  font-weight: 300;
+  letter-spacing: -0.025em;
+  line-height: 1.18;
+  color: var(--ink-100);
+  max-width: 1000px;
+  text-wrap: pretty;
+}
+.ch-mfst .mfst-body em {
+  font-style: normal;
+  color: var(--orange-500);
+  font-weight: 400;
+}
+.ch-mfst .mfst-sub {
+  margin: 32px auto 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink-300);
+  letter-spacing: 0.02em;
+  max-width: 720px;
+  text-transform: none;
+  text-wrap: pretty;
+}
+.ch-mfst .mfst-pillars {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin: 44px auto 0;
+  max-width: 960px;
+}
+.ch-mfst .pillar {
+  padding: 20px 22px;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-sm);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  text-align: left;
+  opacity: var(--i, 0);
+  transition: transform 320ms var(--ease-out), opacity 280ms var(--ease-out);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 14px 28px -22px rgba(10, 15, 31, 0.18);
+}
+.ch-mfst .pillar:nth-child(1) { transition-delay: 200ms; transform: translateY(calc((1 - var(--i, 0)) * 20px)); }
+.ch-mfst .pillar:nth-child(2) { transition-delay: 320ms; transform: translateY(calc((1 - var(--i, 0)) * 24px)); }
+.ch-mfst .pillar:nth-child(3) { transition-delay: 440ms; transform: translateY(calc((1 - var(--i, 0)) * 28px)); }
+.ch-mfst .pillar .num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--orange-500);
+}
+.ch-mfst .pillar h6 {
+  margin: 8px 0 6px;
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--ink-100);
+  letter-spacing: -0.005em;
+}
+.ch-mfst .pillar p {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  line-height: 1.6;
+  color: var(--ink-400);
+}
+.ch-mfst .mfst-tag {
+  margin-top: 38px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--ink-400);
+}
+
+@media (max-width: 820px) {
+  .ch-mfst .mfst-pillars {
+    grid-template-columns: 1fr;
+  }
+}

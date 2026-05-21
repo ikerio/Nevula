@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#e6e8ef" />
+    <title>Nevula — The Operating Layer for the Physical World</title>
+    <meta
+      name="description"
+      content="Nevula is a unified operating layer that turns plug-and-play hardware into a single intelligent system — cameras, sensors, devices, all in one place."
+    />
+
+    <link rel="icon" type="image/svg+xml" href="/assets/nevula-logo.svg" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Critical FOUC guard. Vite injects intro-overlay.css via JS, which
+         doesn't land until after the first paint — so during that gap any
+         chapter content briefly renders at full opacity, then snaps out
+         when the .nv-stage opacity rule arrives. Inlining the hide rules
+         here makes them part of the initial render tree. Removed from the
+         body by main.ts after the wordmark dissolve completes. -->
+    <style>
+      body.intro-active main.nv-stage,
+      body.intro-active .nv-nav,
+      body.intro-active .nv-rail,
+      body.intro-active .nv-audio,
+      body.intro-active .nv-scroll-hint,
+      body.intro-active .nv-cinematic-overlay {
+        opacity: 0 !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+      }
+    </style>
+  </head>
+  <body class="intro-active">
+    <div class="grain" aria-hidden="true"></div>
+    <div class="vignette" aria-hidden="true"></div>
+
+    <main class="nv-stage" id="app"></main>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

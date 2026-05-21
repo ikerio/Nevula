@@ -1,0 +1,23 @@
+node_modules
+dist
+.DS_Store
+*.local
+*.tsbuildinfo
+# tsc -b emits these from vite.config.ts when composite: true — build
+# artifacts, regenerated on every build, should not be committed.
+vite.config.js
+vite.config.d.ts
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.env
+.env.*
+!.env.example
+# OS / scratch
+Thumbs.db
+*.log
