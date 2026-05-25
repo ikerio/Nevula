@@ -6,7 +6,7 @@
   inset: 0;
   display: grid;
   place-items: center;
-  padding: 96px 48px;
+  padding: 64px 48px;
 }
 
 .ch-mfst .mfst {

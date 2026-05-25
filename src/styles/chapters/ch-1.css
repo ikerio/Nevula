@@ -14,7 +14,7 @@
      for the panel that sits absolute-positioned below. */
   grid-template-columns: minmax(380px, 540px) 1fr;
   align-items: center;
-  padding: 88px 8vw 220px;  /* extra bottom padding to clear the cards strip */
+  padding: 56px 8vw 220px;  /* extra bottom padding to clear the cards strip */
   gap: 48px;
 }
 .ch-1 .ch1-head {

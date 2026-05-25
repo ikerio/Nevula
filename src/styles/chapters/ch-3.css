@@ -12,7 +12,7 @@
   display: grid;
   grid-template-columns: minmax(380px, 460px) 1fr;
   align-items: center;
-  padding: 88px 8vw 80px;
+  padding: 56px 8vw 80px;
   gap: 56px;
 }
 

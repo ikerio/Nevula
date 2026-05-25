@@ -7,7 +7,7 @@
   display: grid;
   grid-template-columns: 1fr minmax(380px, 520px);
   align-items: center;
-  padding: 88px 200px 64px 8vw;
+  padding: 56px 200px 64px 8vw;
   gap: 48px;
 }
 .ch-4 .ch4-side {
@@ -140,7 +140,7 @@
    the tall stack; shrink title, tighten row padding so all 3 rows fit. */
 @media (max-height: 900px), (max-width: 1600px) {
   .ch-4 .layout {
-    padding: 64px 140px 48px 6vw;
+    padding: 44px 140px 48px 6vw;
     gap: 32px;
     grid-template-columns: 1fr minmax(360px, 480px);
   }

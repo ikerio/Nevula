@@ -94,7 +94,11 @@ body {
   50%      { transform: scale(1.25); opacity: 0.7; }
 }
 
-/* --- Top nav --- */
+/* --- Top brand + CTA (no bar) ---
+   The chapter-rail on the right handles section navigation, so the old
+   full-width nav links were redundant. Brand floats top-left, CTA floats
+   top-right — no background, no backdrop blur, top viewport space reclaimed
+   for chapter content. */
 .nv-nav {
   position: fixed;
   top: 0;
@@ -106,14 +110,14 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: linear-gradient(180deg, rgba(221, 224, 232, 0.75) 0%, rgba(221, 224, 232, 0.3) 70%, transparent 100%);
-  backdrop-filter: blur(14px) saturate(1.15);
-  -webkit-backdrop-filter: blur(14px) saturate(1.15);
+  background: transparent;
   opacity: var(--nav-show, 1);
   transform: translateY(calc((1 - var(--nav-show, 1)) * -16px));
   /* No CSS transition — engine lerps for us */
-  pointer-events: auto;
+  pointer-events: none; /* container is invisible; children opt in */
 }
+.nv-nav .brand,
+.nv-nav .cta { pointer-events: auto; }
 .nv-nav.is-hidden { pointer-events: none; }
 .nv-nav .brand {
   display: flex;
@@ -133,23 +137,7 @@ body {
   filter: drop-shadow(0 1px 6px rgba(255, 102, 0, 0.30));
 }
 .nv-nav .brand .mark svg { width: 100%; height: 100%; }
-.nv-nav .links {
-  display: flex;
-  align-items: center;
-  gap: 26px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-.nv-nav .links a {
-  color: var(--ink-300);
-  text-decoration: none;
-  transition: color 0.18s;
-}
-.nv-nav .links a:hover { color: var(--ink-100); }
-.nv-nav .links .cta {
-  margin-left: 6px;
+.nv-nav .cta {
   padding: 8px 16px;
   background: var(--ink-100);
   color: var(--bg-void);
@@ -157,13 +145,13 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  text-transform: none;
   letter-spacing: -0.005em;
   font-family: var(--font-display);
   font-size: 13px;
   font-weight: 500;
+  text-decoration: none;
 }
-.nv-nav .links .cta:hover { background: white; color: var(--ink-100); }
+.nv-nav .cta:hover { background: white; color: var(--ink-100); }
 
 /* --- Progress rail (right side) --- */
 .nv-rail {
@@ -659,7 +647,6 @@ body {
   .nv-scroll-hint,
   .nv-audio { display: none !important; }
   .nv-nav { opacity: 1 !important; transform: none !important; }
-  .nv-nav .links a:not(.cta) { display: none; }
   /* Orbits + tiles become inline stacks */
   .nv-orbit,
   .nv-tile {

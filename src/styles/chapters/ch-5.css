@@ -14,7 +14,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 76px 6vw 56px;
+  padding: 56px 6vw 56px;
   gap: 36px;
 }
 
@@ -414,7 +414,7 @@
    ------------------------------------------------------------------ */
 @media (max-height: 900px), (max-width: 1600px) {
   .ch-5 .layout {
-    padding: 64px 6vw 40px;
+    padding: 44px 6vw 40px;
     gap: 24px;
   }
   .ch-5 .ch5-head .nv-title.size-l {
