@@ -1,6 +1,8 @@
 import * as THREE from 'three'
 import type { ParticleState } from './types'
 import { getLogoTags, getLogoCachedColors } from './states/logo'
+import { getPublicSafetyCachedColors } from './states/public-safety'
+import { getMicroprocessorCachedColors } from './states/microprocessor'
 
 // Official Nevula brand colors — Manuel Valdez guidelines v#3.
 //   azul   #00529C  ·  naranja #FF6600  ·  negro #000000
@@ -22,6 +24,20 @@ export function colorize(count: number, state: ParticleState): Float32Array {
   // random palette entirely so the brand mesh reads with its baked colors.
   if (state === 'logo') {
     const direct = getLogoCachedColors()
+    if (direct && direct.length === count * 3) return direct.slice()
+  }
+  // Same path for public-safety — the GLB carries baseColorFactor per mesh
+  // (silver plates, blue metacube, orange flows), and the state generator
+  // caches the per-particle colors aligned to the surface samples.
+  if (state === 'public-safety') {
+    const direct = getPublicSafetyCachedColors()
+    if (direct && direct.length === count * 3) return direct.slice()
+  }
+  // And microprocessor — same convention. Falls through to the per-state
+  // random palette below since the state generator forces _cachedColors=null
+  // for brand coherence.
+  if (state === 'microprocessor') {
+    const direct = getMicroprocessorCachedColors()
     if (direct && direct.length === count * 3) return direct.slice()
   }
   const c = new Float32Array(count * 3)
@@ -55,6 +71,14 @@ export function colorize(count: number, state: ParticleState): Float32Array {
       col = r < 0.7 ? COBALT : (r < 0.92 ? COBALT_DEEP : ORANGE)
     } else if (state === 'constellation') {
       col = r < 0.86 ? COBALT : (r < 0.98 ? WHITE : ORANGE)
+    } else if (state === 'public-safety') {
+      // Fallback only — used if the GLB cached colors are unavailable.
+      col = r < 0.05 ? ORANGE : (r < 0.10 ? WHITE : (r < 0.7 ? COBALT_DEEP : COBALT))
+    } else if (state === 'microprocessor') {
+      // Slightly more orange than public-safety/city to evoke the
+      // hot-component look — silicon, traces, the central die. Still
+      // cobalt-dominant so it reads as the same brand.
+      col = r < 0.10 ? ORANGE : (r < 0.14 ? WHITE : (r < 0.7 ? COBALT_DEEP : COBALT))
     } else {
       // nebula
       col = r < 0.7 ? COBALT_DEEP : (r < 0.92 ? COBALT : ORANGE)

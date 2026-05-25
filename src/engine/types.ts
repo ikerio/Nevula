@@ -13,6 +13,8 @@ export type ParticleState =
   | 'building'
   | 'home'
   | 'device'
+  | 'public-safety'
+  | 'microprocessor'
 
 /** Returns count*3 Float32Array of XYZ positions in roughly [-1.5, 1.5]. */
 export type StateGenerator = (count: number) => Float32Array
@@ -76,6 +78,13 @@ export interface SlotInternal {
   offsetY: number
   offsetXTarget: number
   offsetYTarget: number
+
+  /** Per-state base rotation applied to the points object, on top of the
+   *  mouse-parallax pitch. Lerped each frame toward STATE_ROTATIONS[state]
+   *  so transitions between e.g. city → public-safety smoothly rotate the
+   *  scene from flat to isometric instead of snapping. */
+  baseRotX: number
+  baseRotY: number
 
   /** Preview-slot DOM element (only set on slots created via NevulaSlot). */
   el?: HTMLElement

@@ -106,7 +106,7 @@ function sharedTick(): void {
 
   if (s.backgroundSlot) {
     const slot = s.backgroundSlot
-    updateSlot(slot, t)
+    updateSlot(slot, t, dt)
     slot.camera.aspect = W / H
     slot.camera.updateProjectionMatrix()
     if (s.composer) {
@@ -128,7 +128,7 @@ function sharedTick(): void {
     if (rect.bottom <= -100 || rect.top >= H + 100 || rect.right <= 0 || rect.left >= W) continue
     if (rect.width < 4 || rect.height < 4) continue
 
-    updateSlot(slot, t)
+    updateSlot(slot, t, dt)
 
     const vx = rect.left
     const vy = H - rect.bottom

@@ -12,6 +12,8 @@ export type ParticleState =
   | 'building'
   | 'home'
   | 'device'
+  | 'public-safety'
+  | 'microprocessor'
 
 export interface ChapterConfig {
   key: string

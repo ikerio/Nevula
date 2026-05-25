@@ -8,6 +8,8 @@ import { genCity } from './city'
 import { genBuilding } from './building'
 import { genHome } from './home'
 import { genDevice } from './device'
+import { genPublicSafety } from './public-safety'
+import { genMicroprocessor } from './microprocessor'
 
 export const STATE_FNS: Record<ParticleState, StateGenerator> = {
   nebula: genNebula,
@@ -19,4 +21,6 @@ export const STATE_FNS: Record<ParticleState, StateGenerator> = {
   building: genBuilding,
   home: genHome,
   device: genDevice,
+  'public-safety': genPublicSafety,
+  'microprocessor': genMicroprocessor,
 }

@@ -13,6 +13,7 @@ import { renderChapterRail } from './components/chapter-rail'
 import { renderScrollHint } from './components/scroll-hint'
 import { renderAudioButton } from './components/audio-button'
 import { chapterRenderers } from './chapters'
+import { initChapter1Cards, type Chapter1CardsHandle } from './chapters/ch-1'
 import { initPpConsole, type PpConsoleHandle } from './chapters/ch-3-console'
 import { initFounderChapter } from './chapters/ch-5'
 import type { FounderDossierHandle } from './chapters/ch-5-dossier'
@@ -20,6 +21,8 @@ import { NevulaScroll } from './scroll/scroll-engine'
 import { CHAPTERS } from './scroll/chapter-config'
 import { NevulaBackground, disposeShared } from './engine'
 import { preloadLogoGlb } from './engine/states/logo'
+import { preloadPublicSafetyGlb } from './engine/states/public-safety'
+import { preloadMicroprocessorGlb } from './engine/states/microprocessor'
 
 // Reset scroll to top so the intro always exits to chapter 0. Browsers
 // otherwise restore the previous scroll position on reload, which would
@@ -47,12 +50,28 @@ if (!stage) throw new Error('main: missing #app stage')
 // dev, `/Nevula/` on GitHub Pages — so the fetch path stays correct in
 // both environments. A hardcoded `/assets/...` would 404 under the
 // subpath deploy.
-await preloadLogoGlb(`${import.meta.env.BASE_URL}assets/NevulaLogo3D.glb`).catch(err => {
-  console.warn('[nevula] logo GLB preload failed, falling back to SVG sampler', err)
-})
+//
+// Preloads run in parallel — the logo is critical-path (intro hands off to
+// it), but Public_Safety can fail without blocking boot (the state file emits
+// fallback positions if its preload didn't complete by the time it's needed).
+await Promise.all([
+  preloadLogoGlb(`${import.meta.env.BASE_URL}assets/NevulaLogo3D.glb`).catch(err => {
+    console.warn('[nevula] logo GLB preload failed, falling back to SVG sampler', err)
+  }),
+  preloadPublicSafetyGlb(`${import.meta.env.BASE_URL}assets/Public_Safety.glb`).catch(err => {
+    console.warn('[nevula] public-safety GLB preload failed', err)
+  }),
+  preloadMicroprocessorGlb(`${import.meta.env.BASE_URL}assets/Microprocessor.glb`).catch(err => {
+    console.warn('[nevula] microprocessor GLB preload failed', err)
+  }),
+])
 
 const field = NevulaBackground({
-  count: 3400,
+  // 4500 (up from 3400) — Public Safety's GLB is geometrically denser than
+  // the logo (10 plates + 10 buildings + metacube wireframe + arcs + trails
+  // need to all read distinctly). Logo + other states still look right at
+  // this count (more density on existing shapes, no recognition loss).
+  count: 4500,
   size: 0.030,        // matches chapter 0/9 logo size
   state: 'logo',      // pre-set so the first chapter-change is a no-op
   scale: 1.15,        // matches chapter 0 scale
@@ -73,6 +92,7 @@ for (const render of chapterRenderers) {
 
 const ppConsole: PpConsoleHandle | null = initPpConsole()
 const founderDossier: FounderDossierHandle = initFounderChapter()
+const chapter1Cards: Chapter1CardsHandle = initChapter1Cards(field)
 
 document.body.appendChild(renderNav())
 document.body.appendChild(renderChapterRail(CHAPTERS))
@@ -162,6 +182,7 @@ if (import.meta.hot) {
     scroll.dispose()
     ppConsole?.dispose()
     founderDossier.dispose()
+    chapter1Cards.dispose()
     disposeShared()
     document.querySelectorAll(
       '.nv-nav, .nv-rail, .nv-scroll-hint, .nv-audio, .nv-cinematic-overlay, .nv-chapter, .nv-scroll-spacer, .intro-overlay, .fd-backdrop',

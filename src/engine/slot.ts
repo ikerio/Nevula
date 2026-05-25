@@ -5,9 +5,30 @@ import { colorize } from './colors'
 import { createParticleMaterial, STATE_BLENDING } from './materials'
 import { applyStateBehavior } from './behaviors/per-state-update'
 import { tickLogoTrails, resetLogoTrails } from './states/logo'
+import {
+  tickPublicSafetyAnimation,
+  tickPublicSafetyTrails,
+  tickPublicSafetyArcs,
+  resetPublicSafetyTrails,
+} from './states/public-safety'
+import { tickMicroprocessorAnimation, resetMicroprocessor } from './states/microprocessor'
 
 /** Duration (ms) of each half of the blending crossfade (fade-out + fade-in). */
 const BLEND_FADE_MS = 120
+
+/** Per-state base rotation of the points object (radians). States not listed
+ *  here default to (0, 0). Mouse parallax is added on top of this. */
+const STATE_ROTATIONS: Partial<Record<ParticleState, { x: number; y: number }>> = {
+  // Public Safety reads as an isometric city — tilt the points so the
+  // ground plane (XZ after Y-up GLB conversion) faces the camera at an
+  // angle. Values picked visually: ~28° pitch + ~28° yaw lands close to a
+  // classic isometric three-quarter view without becoming literal.
+  'public-safety': { x: 0.5, y: 0.5 },
+  // Microprocessor has plates stacked along Z in Blender (→ Y after Y-up
+  // GLB conversion). Same isometric tilt so the layered exploded view
+  // reads at a three-quarter angle instead of edge-on.
+  'microprocessor': { x: 0.5, y: 0.5 },
+}
 
 const DEFAULTS: Required<SlotOptions> = {
   count: 1200,
@@ -102,6 +123,8 @@ export function makeSlot(pixelRatio: number, optsIn: SlotOptions): SlotInternal 
     offsetY: 0,
     offsetXTarget: 0,
     offsetYTarget: 0,
+    baseRotX: 0,
+    baseRotY: 0,
     blendingTransition: null,
   }
 }
@@ -110,10 +133,14 @@ export function makeSlot(pixelRatio: number, optsIn: SlotOptions): SlotInternal 
 export function setSlotState(slot: SlotInternal, state: ParticleState): void {
   if (slot.state === state) return
   const wasLogo = slot.state === 'logo'
+  const wasPublicSafety = slot.state === 'public-safety'
+  const wasMicroprocessor = slot.state === 'microprocessor'
   slot.state = state
-  // Wireframe-trail state is module-level in logo.ts. Reset on logo exit so
-  // the next logo entry spawns fresh trails rather than resuming stale phases.
+  // Each GLB-state's module-level state is reset on exit so the next entry
+  // starts fresh (no stale trail phases, no orphaned solid display meshes).
   if (wasLogo) resetLogoTrails()
+  if (wasPublicSafety) resetPublicSafetyTrails(slot.geo, slot.count)
+  if (wasMicroprocessor) resetMicroprocessor()
   const fn = STATE_FNS[state]
   if (!fn) return
   slot.pendingTargets = fn(slot.count)
@@ -179,8 +206,10 @@ export function buildLines(slot: SlotInternal): void {
 /**
  * One-frame update — morph step + per-state behavior + mouse parallax + scale
  * + offset lerp. Caller drives the time `t` (seconds, from a shared clock).
+ * `dt` is the per-frame delta; required for AnimationMixer-driven states
+ * (e.g., public-safety) but ignored by static states.
  */
-export function updateSlot(slot: SlotInternal, t: number): void {
+export function updateSlot(slot: SlotInternal, t: number, dt: number = 0): void {
   const col = slot.geo.getAttribute('color').array as Float32Array
   const target = slot.targetPos
   const count = slot.count
@@ -208,6 +237,21 @@ export function updateSlot(slot: SlotInternal, t: number): void {
     }
   }
 
+  // Public Safety: the GLB carries baked sine loops on most meshes. Advance
+  // the AnimationMixer + re-transform cached per-particle local samples into
+  // the slot's targetPos. Skipped during morph — the morph would fight the
+  // animation, and the GLB resting pose at t=0 is what `pending` represents.
+  if (slot.state === 'public-safety' && !slot.isMorphing) {
+    tickPublicSafetyAnimation(target, count, dt)
+  }
+  // Microprocessor — animation-driven pattern + solid mesh overlay (chips
+  // are rendered as translucent acrylic, core gets both particles + solid).
+  // Pass slot.points as parent (display meshes inherit transforms) + camera
+  // for chip hover raycasting.
+  if (slot.state === 'microprocessor' && !slot.isMorphing) {
+    tickMicroprocessorAnimation(target, count, dt, slot.points, slot.camera)
+  }
+
   // Per-state position drift around target.
   applyStateBehavior(slot, t)
   slot.geo.getAttribute('position').needsUpdate = true
@@ -220,6 +264,22 @@ export function updateSlot(slot: SlotInternal, t: number): void {
   if (slot.state === 'logo' && !slot.isMorphing) {
     const updated = tickLogoTrails(slot.geo, slot.count, t)
     if (updated) {
+      slot.geo.getAttribute('color').needsUpdate = true
+      slot.geo.getAttribute('aAlpha').needsUpdate = true
+    }
+  }
+
+  // Public Safety: trail particles walk the ConnectionFlow* edges + arc
+  // light-lines (real THREE.LineSegments) bezier-curve from Plate_Core to a
+  // random building, with small rider particles bobbing along each line.
+  // tickPublicSafetyArcs is passed slot.points as the parent so the lines
+  // are children of the points object and inherit its transform (rotation,
+  // scale, offset). Both ticks run only outside the morph window — during
+  // morph the position lerp would fight the per-frame overwrites.
+  if (slot.state === 'public-safety' && !slot.isMorphing) {
+    const trailsUpdated = tickPublicSafetyTrails(slot.geo, slot.count, t)
+    const arcsUpdated = tickPublicSafetyArcs(slot.geo, slot.count, slot.points, t)
+    if (trailsUpdated || arcsUpdated) {
       slot.geo.getAttribute('color').needsUpdate = true
       slot.geo.getAttribute('aAlpha').needsUpdate = true
     }
@@ -251,16 +311,26 @@ export function updateSlot(slot: SlotInternal, t: number): void {
     }
   }
 
-  // Logo state gets a slow ambient yaw (±2.5° over a ~35-second cycle) to
-  // give the brand mark some dimension without spinning it. Other states
-  // stay flat — mouse parallax (below) still applies pitch in all states.
-  slot.points.rotation.y =
-    slot.state === 'logo' ? Math.sin(t * 0.18) * 0.045 : 0
+  // Per-state base rotation (lerped) — lets specific states present at an
+  // angle (e.g., public-safety's isometric tilt) without snapping when the
+  // user enters/leaves the state. Mouse parallax + logo's ambient yaw are
+  // composed ON TOP of this base.
+  const targetRot = STATE_ROTATIONS[slot.state]
+  const targetX = targetRot?.x ?? 0
+  const targetY = targetRot?.y ?? 0
+  slot.baseRotX += (targetX - slot.baseRotX) * 0.05
+  slot.baseRotY += (targetY - slot.baseRotY) * 0.05
+
+  const ambientYaw = slot.state === 'logo' ? Math.sin(t * 0.18) * 0.045 : 0
+  let parallaxX = 0
   if (slot.opts.interactive) {
     slot.mouseX += (slot.mouseTx - slot.mouseX) * 0.05
     slot.mouseY += (slot.mouseTy - slot.mouseY) * 0.05
-    slot.points.rotation.x = slot.mouseY * 0.18
+    parallaxX = slot.mouseY * 0.18
   }
+
+  slot.points.rotation.x = slot.baseRotX + parallaxX
+  slot.points.rotation.y = slot.baseRotY + ambientYaw
 
   // Scale lerp.
   slot.scale += (slot.scaleTarget - slot.scale) * 0.05

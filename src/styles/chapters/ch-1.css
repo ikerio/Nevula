@@ -1,28 +1,352 @@
 /* Chapter 1 — What Is Nevula?
    Particle "city" lives right-of-center (offset via JS).
-   Content + use-case stack live on the LEFT. */
+   Content + use-case stack live on the LEFT.
+   When a use-card is clicked, a per-card expanded panel takes over the
+   left column and the particle field morphs to the card's GLB shape. */
 
 .ch-1 .layout {
   position: absolute;
   inset: 0;
   display: grid;
-  /* Asymmetric grid: title column hugs left, particle has air on right */
+  /* Asymmetric grid mirroring ch-2 / ch-3: title column hugs left, particle
+     has air on right. Head is vertically centered by default (matches the
+     other chapters); when expanded, a translate moves it up to make room
+     for the panel that sits absolute-positioned below. */
   grid-template-columns: minmax(380px, 540px) 1fr;
-  grid-template-rows: 1fr;
   align-items: center;
-  padding: 88px 8vw 64px;
+  padding: 88px 8vw 220px;  /* extra bottom padding to clear the cards strip */
   gap: 48px;
 }
 .ch-1 .ch1-head {
   text-align: left;
-  transform: translateY(calc((1 - var(--i, 0)) * 16px));
+  position: relative;
+  isolation: isolate;
+  /* Two offsets composed into one transform: (a) entry stagger driven by
+     --i, (b) expanded-state translate to top via --head-y. */
+  --head-y: 0px;
+  transform: translateY(calc((1 - var(--i, 0)) * 16px + var(--head-y)));
+  transition: transform 320ms var(--ease-out);
+}
+.ch-1.is-expanded .ch1-head {
+  /* Translate head from its natural centered position to the top of the
+     head+panel assembly. The math: head naturally centers in (viewport - 308),
+     compact-head height is ~102, the panel (412) + gap (15) sit below.
+     The vertical offset from centered head to centered-as-unit head is a
+     constant ≈ -213px regardless of viewport height (the two centering
+     formulas differ by half the panel+gap height = (412+15)/2). */
+  --head-y: -214px;
+}
+/* Soft radial scrim behind the head text — matches the ch-3 / ch-cmd
+   pattern. Doesn't hard-frame the text; just lifts legibility against the
+   particle viz. */
+.ch-1 .ch1-head::before {
+  content: "";
+  position: absolute;
+  inset: -28px -48px;
+  background: radial-gradient(70% 80% at 30% 50%,
+    rgba(246, 247, 251, 0.94) 0%,
+    rgba(246, 247, 251, 0.78) 40%,
+    rgba(246, 247, 251, 0.45) 70%,
+    rgba(246, 247, 251, 0.0)  100%);
+  z-index: -1;
+  pointer-events: none;
 }
 .ch-1 .ch1-head .nv-eyebrow { justify-content: flex-start; }
-.ch-1 .ch1-head .nv-title { text-align: left; }
+.ch-1 .ch1-head .nv-title {
+  text-align: left;
+  transition: font-size 280ms var(--ease-out), margin 280ms var(--ease-out);
+}
 .ch-1 .ch1-head .nv-lede {
   margin: 24px 0 0;
   text-align: left;
   max-width: 460px;
+  opacity: 1;
+  max-height: 200px;
+  overflow: hidden;
+  transition: opacity 240ms var(--ease-out), max-height 320ms var(--ease-out), margin 320ms var(--ease-out);
+}
+/* When the chapter is expanded, fade out the lede + shrink the title slightly
+   so the expanded panel has room beneath without overlapping. Eyebrow stays
+   visible the whole time. */
+.ch-1.is-expanded .ch1-head .nv-lede {
+  opacity: 0;
+  max-height: 0;
+  margin-top: 0;
+}
+.ch-1.is-expanded .ch1-head .nv-title {
+  font-size: clamp(22px, 2.2vw, 30px);
+}
+
+/* ---------------------------------------------------------------------------
+   Expanded card panel — sits BELOW the head in the left column, hidden by
+   default (collapsed to 0 height + invisible). When .use-panel.is-active,
+   it expands and crossfades in as a glassmorphic white card with the same
+   visual language as the cards in the bottom strip.
+   --------------------------------------------------------------------------- */
+.ch-1 .use-panel {
+  /* Positioned absolutely inside .ch-1 so it doesn't displace the grid.
+     The top is vh-based so it tracks the head's centered position across
+     viewport heights — sits just below the translated head bottom.
+     Math: desired head top = 88 + (vh - 837)/2 = 50vh - 330.5; head bottom
+     = that + 102 (compact head height); panel top = head bottom + 15 gap. */
+  position: absolute;
+  left: 8vw;
+  top: calc(50vh - 213.5px);
+  width: min(540px, calc(50vw - 8vw - 48px));
+  max-width: 540px;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-md, 14px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 22px 24px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 18px 36px -26px rgba(10, 15, 31, 0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  z-index: 2;
+  /* Hidden state: faded out + slightly translated. Doesn't affect head's
+     layout since it's positioned absolutely. */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-6px);
+  transition:
+    opacity 280ms var(--ease-out),
+    transform 280ms var(--ease-out),
+    visibility 0s linear 280ms;
+}
+.ch-1 .use-panel.is-active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+  transition:
+    opacity 280ms var(--ease-out),
+    transform 280ms var(--ease-out),
+    visibility 0s linear 0s;
+}
+
+.ch-1 .up-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 14px 6px 6px;
+  border: 1px solid var(--line-soft);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.95);
+  align-self: flex-start;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset;
+}
+.ch-1 .up-shield {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(0, 82, 156, 0.10);
+  color: var(--cobalt-600, #00529c);
+  flex-shrink: 0;
+}
+.ch-1 .up-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--orange-500);
+  font-weight: 600;
+}
+
+.ch-1 .up-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(22px, 2vw, 26px);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--ink-100);
+}
+
+.ch-1 .up-lede {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--ink-400);
+  max-width: 460px;
+}
+
+.ch-1 .up-bullets {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ch-1 .up-bullets li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--ink-200);
+}
+.ch-1 .up-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(0, 82, 156, 0.10);
+  color: var(--cobalt-600, #00529c);
+  flex-shrink: 0;
+}
+.ch-1 .up-check svg {
+  width: 11px;
+  height: 11px;
+}
+
+.ch-1 .up-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line-soft);
+  margin-top: 6px;
+}
+.ch-1 .up-stat {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.ch-1 .up-stat-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  color: var(--cobalt-600, #00529c);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.ch-1 .up-stat-icon svg {
+  width: 18px;
+  height: 18px;
+}
+.ch-1 .up-stat > div {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  gap: 2px;
+}
+.ch-1 .up-stat-value {
+  font-family: var(--font-display);
+  font-size: 14px;
+  color: var(--ink-100);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.ch-1 .up-stat-label {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  color: var(--ink-400);
+  letter-spacing: 0.04em;
+}
+
+/* ---------------------------------------------------------------------------
+   Connector line — SVG L-shape drawn from the bottom of the expanded panel
+   down to the top of the active card. Positioned absolutely inside .ch-1.
+   Hidden by default; revealed when .ch-1.is-expanded.
+   --------------------------------------------------------------------------- */
+.ch-1 .use-connector {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 240ms var(--ease-out) 60ms;
+}
+.ch-1.is-expanded .use-connector {
+  opacity: 1;
+}
+.ch-1 .use-connector path {
+  fill: none;
+  stroke: rgba(0, 82, 156, 0.45);
+  stroke-width: 1.25;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ---------------------------------------------------------------------------
+   Chip hover overlays — Logistics. Floating cards positioned in viewport
+   pixels by the chapter's RAF loop (anchor = chip's projected screen pos).
+   Pointer-events: none so they never block the raycaster underneath.
+   --------------------------------------------------------------------------- */
+.ch-1 .chip-overlays {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+}
+.ch-1 .chip-overlay {
+  position: fixed;
+  left: 0;
+  top: 0;
+  /* Anchor sits at the chip's projected center; transform offsets the card
+     above and centers horizontally. */
+  transform: translate(-50%, calc(-100% - 18px));
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 220ms var(--ease-out);
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-sm);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 10px 14px 11px;
+  min-width: 170px;
+  max-width: 220px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 12px 28px -16px rgba(10, 15, 31, 0.30);
+  will-change: left, top, opacity;
+}
+.ch-1 .chip-overlay.is-visible {
+  opacity: 1;
+}
+.ch-1 .chip-overlay .co-eyebrow {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--orange-500);
+  margin-bottom: 4px;
+}
+.ch-1 .chip-overlay p {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--ink-100);
+}
+/* Tiny pointer below the card, pointing down to the chip. */
+.ch-1 .chip-overlay::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -5px;
+  width: 8px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.94);
+  border-right: 1px solid var(--line-soft);
+  border-bottom: 1px solid var(--line-soft);
+  transform: translateX(-50%) rotate(45deg);
 }
 
 /* Use-case strip — 4 vertical-orientation pill cards along the bottom */
@@ -46,9 +370,32 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
+  cursor: default;
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.6) inset,
     0 14px 28px -22px rgba(10, 15, 31, 0.20);
+}
+/* Configured cards (those wired to a particle state) are interactive. */
+.ch-1 .use-card[data-card-id="public-safety"],
+.ch-1 .use-card[data-card-id="logistics"] {
+  cursor: pointer;
+  transition: border-color 220ms var(--ease-out), box-shadow 220ms var(--ease-out), transform 220ms var(--ease-out);
+}
+.ch-1 .use-card[data-card-id="public-safety"]:hover,
+.ch-1 .use-card[data-card-id="logistics"]:hover {
+  border-color: rgba(0, 82, 156, 0.35);
+}
+/* Active card — selected one whose panel is showing. */
+.ch-1 .use-card.is-active {
+  border-color: var(--cobalt-600, #00529c);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 0 0 3px rgba(0, 82, 156, 0.10),
+    0 18px 32px -22px rgba(0, 82, 156, 0.40);
+  transform: translateY(-2px);
+}
+.ch-1 .use-card.is-active .ix {
+  color: var(--cobalt-600, #00529c);
 }
 .ch-1 .use-card .ix {
   font-family: var(--font-mono);
@@ -93,5 +440,8 @@
     right: auto;
     grid-template-columns: 1fr 1fr;
     margin-top: 32px;
+  }
+  .ch-1 .up-stats {
+    grid-template-columns: 1fr 1fr;
   }
 }

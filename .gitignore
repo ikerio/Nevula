@@ -10,6 +10,8 @@ vite.config.d.ts
 .vscode/*
 !.vscode/extensions.json
 .idea
+# Local Claude Code dev tooling (preview launch config). Per-machine, not source.
+.claude/
 *.suo
 *.ntvs*
 *.njsproj

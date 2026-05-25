@@ -21,15 +21,17 @@ export interface ParticleUniforms {
  * Bloom still provides the glow on bright pixels through normal blending.
  */
 export const STATE_BLENDING: Record<ParticleState, THREE.Blending> = {
-  nebula:        THREE.NormalBlending,
-  constellation: THREE.NormalBlending,
-  flow:          THREE.NormalBlending,
-  city:          THREE.NormalBlending,
-  building:      THREE.NormalBlending,
-  home:          THREE.NormalBlending,
-  device:        THREE.NormalBlending,
-  logo:          THREE.NormalBlending,
-  trails:        THREE.AdditiveBlending,
+  nebula:          THREE.NormalBlending,
+  constellation:   THREE.NormalBlending,
+  flow:            THREE.NormalBlending,
+  city:            THREE.NormalBlending,
+  building:        THREE.NormalBlending,
+  home:            THREE.NormalBlending,
+  device:          THREE.NormalBlending,
+  logo:            THREE.NormalBlending,
+  trails:          THREE.AdditiveBlending,
+  'public-safety': THREE.NormalBlending,
+  'microprocessor': THREE.NormalBlending,
 }
 
 export interface ParticleMaterialOptions {

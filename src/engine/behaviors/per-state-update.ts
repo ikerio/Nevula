@@ -56,6 +56,16 @@ export function applyStateBehavior(slot: SlotInternal, t: number): void {
       pos[ix + 1] = target[ix + 1] + Math.cos(t * 0.6 + i * 0.11) * amp
       pos[ix + 2] = target[ix + 2] + Math.sin(t * 0.5 + i * 0.09) * (amp * 0.7)
     }
+  } else if (state === 'public-safety' || state === 'microprocessor') {
+    // Both GLB-animated states — baked sine loop provides per-mesh motion,
+    // adding per-particle wiggle on top compounds and reads as jitter. Just
+    // copy animated target → pos.
+    for (let i = 0; i < count; i++) {
+      const ix = i * 3
+      pos[ix]     = target[ix]
+      pos[ix + 1] = target[ix + 1]
+      pos[ix + 2] = target[ix + 2]
+    }
   } else if (state === 'nebula') {
     for (let i = 0; i < count; i++) {
       const ix = i * 3
