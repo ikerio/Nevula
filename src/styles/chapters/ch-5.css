@@ -408,6 +408,34 @@
 }
 
 /* ------------------------------------------------------------------
+   Compact desktop — 14" MBP. Card aspect-ratio is locked at 9/16, so on
+   short viewports we have to shrink the head AND clamp the grid max-width
+   to keep the 4-up row from over-tall cards crashing into the footer.
+   ------------------------------------------------------------------ */
+@media (max-height: 900px), (max-width: 1600px) {
+  .ch-5 .layout {
+    padding: 64px 6vw 40px;
+    gap: 24px;
+  }
+  .ch-5 .ch5-head .nv-title.size-l {
+    font-size: clamp(34px, 4.2vw, 60px);
+    line-height: 1.02;
+  }
+  .ch-5 .ch5-head .nv-lede {
+    margin-top: 14px;
+    font-size: clamp(13px, 1.0vw, 16px);
+    max-width: 520px;
+  }
+  .ch-5 .founder-grid { gap: 14px; max-width: 1120px; }
+  .ch-5 .fc { aspect-ratio: 7 / 11; }
+  .ch-5 .fc .meta { padding: 12px 14px 14px; }
+  .ch-5 .fc .name { font-size: 17px; }
+  .ch-5 .fc .tag { font-size: 12px; }
+  .ch-5 .fc .pix { font-size: 28px; top: 10px; left: 12px; }
+  .ch-5 .fc .foot { margin-top: 10px; padding-top: 10px; }
+}
+
+/* ------------------------------------------------------------------
    Responsive — 2×2 below 1080px so cards keep workable width.
    ------------------------------------------------------------------ */
 @media (max-width: 1080px) {

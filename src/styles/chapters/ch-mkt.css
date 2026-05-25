@@ -192,6 +192,34 @@
   max-width: 80px;
 }
 
+/* Compact desktop — 14" MBP. Shrink head + tile row-height so the full
+   bento mosaic fits without the bottom row clipping. */
+@media (max-height: 900px), (max-width: 1600px) {
+  .ch-mkt .layout {
+    padding: 64px 5vw 40px;
+    gap: 24px;
+  }
+  .ch-mkt .mkt-head .nv-title.size-l {
+    font-size: clamp(34px, 4.2vw, 60px);
+    line-height: 1.02;
+  }
+  .ch-mkt .mkt-head .nv-lede {
+    margin-top: 14px;
+    font-size: clamp(13px, 1.0vw, 16px);
+    max-width: 500px;
+  }
+  .ch-mkt .mosaic {
+    max-width: 1180px;
+    grid-auto-rows: 96px;
+    gap: 8px;
+  }
+  .ch-mkt .tile { padding: 10px 12px; gap: 6px; }
+  .ch-mkt .tile h5 { font-size: 13px; }
+  .ch-mkt .tile.feature h5 { font-size: 18px; }
+  .ch-mkt .tile.feature .price { font-size: 18px; }
+  .ch-mkt .tile .price { font-size: 13px; }
+}
+
 @media (max-width: 820px) {
   .ch-mkt .mosaic {
     grid-template-columns: repeat(2, 1fr);

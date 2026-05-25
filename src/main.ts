@@ -103,6 +103,7 @@ const scroll = new NevulaScroll({
   chapters: CHAPTERS,
   perChapterVh: 180,
   lerpSpeed: 1.0,
+  snap: true,
   onChapterChange: (_idx, c, _prev) => {
     field.setState(c.state)
     if (c.scale != null) field.setScale(c.scale)

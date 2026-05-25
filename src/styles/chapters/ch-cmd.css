@@ -358,6 +358,35 @@
   text-transform: uppercase;
 }
 
+/* Compact desktop — 14" MBP. Right column (title + lede + 3 bullets) is the
+   tall one; shrink title + bullet padding so all 3 bullets stay visible.
+   Left board uses available width. */
+@media (max-height: 900px), (max-width: 1600px) {
+  .ch-cmd .layout {
+    padding: 72px 6vw 56px;
+    gap: 40px;
+    grid-template-columns: 1.05fr minmax(360px, 420px);
+  }
+  .ch-cmd .cmd-head .nv-title.size-l {
+    font-size: clamp(34px, 4.2vw, 60px);
+    line-height: 1.02;
+  }
+  .ch-cmd .cmd-head .nv-lede {
+    margin: 18px 0 18px;
+    font-size: clamp(13px, 1.0vw, 16px);
+    max-width: 400px;
+  }
+  .ch-cmd .cmd-bullet { padding: 9px 0; gap: 12px; }
+  .ch-cmd .cmd-bullet h6 { font-size: 14px; }
+  .ch-cmd .cmd-bullet p  { margin-top: 2px; font-size: 10px; line-height: 1.5; }
+  .ch-cmd .cmd-stage { max-height: 600px; }
+  .cmd-board { padding: 14px 14px 12px; gap: 10px; max-width: 680px; }
+  .cmd-center { min-height: 122px; padding: 10px; gap: 6px; }
+  .cmd-center .map { height: 36px; }
+  .cmd-unit { padding: 8px 10px; }
+  .cmd-board .cmd-units { gap: 6px; padding-top: 10px; }
+}
+
 @media (max-width: 820px) {
   .ch-cmd .layout {
     display: block;

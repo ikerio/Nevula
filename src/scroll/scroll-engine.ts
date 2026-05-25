@@ -1,4 +1,4 @@
-import { clamp, lerp } from '../lib/math'
+import { clamp } from '../lib/math'
 import { dispatchChapterChange } from '../lib/events'
 import type {
   ChapterConfig,
@@ -39,6 +39,8 @@ export class NevulaScroll {
     lastScroll: 0,
     snapTarget: null as number | null,
     lastTick: 0,
+    snapPending: false,
+    snapClearAt: 0,
   }
 
   private rafId = 0
@@ -140,12 +142,28 @@ export class NevulaScroll {
     // Smooth target → progress (with lerpSpeed=1.0 this is identity).
     this.state.progress += (this.state.target - this.state.progress) * this.opts.lerpSpeed
 
-    // Optional snap when user has been idle for >380ms.
-    if (this.opts.snap && performance.now() - this.state.lastScroll > 380) {
-      const t = this.state.progress * (this.N - 1)
-      const nearest = Math.round(t)
-      if (this.state.snapTarget == null) this.state.snapTarget = nearest / (this.N - 1)
-      this.state.target = lerp(this.state.target, this.state.snapTarget, 0.06)
+    // Idle-snap to nearest chapter — fires once when scrolling has been idle for
+    // SNAP_IDLE_MS and the user is more than SNAP_THRESHOLD_PX off a chapter
+    // boundary. Uses native smooth scroll so the scrollbar moves with the
+    // visuals; snapPending gates re-fire while the smooth scroll is in flight.
+    const now = performance.now()
+    if (this.state.snapPending && now > this.state.snapClearAt) {
+      this.state.snapPending = false
+    }
+    if (
+      this.opts.snap &&
+      !this.state.snapPending &&
+      now - this.state.lastScroll > 260
+    ) {
+      const max = Math.max(1, this.spacer.offsetHeight - window.innerHeight)
+      const t = (window.scrollY / max) * (this.N - 1)
+      const nearest = clamp(Math.round(t), 0, this.N - 1)
+      const snapY = (nearest / (this.N - 1)) * max
+      if (Math.abs(snapY - window.scrollY) > 6) {
+        this.state.snapPending = true
+        this.state.snapClearAt = now + 900
+        window.scrollTo({ top: snapY, behavior: 'smooth' })
+      }
     }
 
     this.state.t = this.state.progress * (this.N - 1)
