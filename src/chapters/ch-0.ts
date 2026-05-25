@@ -10,16 +10,15 @@ export function renderChapter0(): HTMLElement {
             <span class="pip"></span>
             <span class="num">00</span>
             <span class="bar"></span>
-            <span>Nevula &middot; SafeTech platform</span>
+            <span>Nevula &middot; Orchestration platform</span>
           </div>
           <h1 class="nv-title size-xl">
-            Building the future<br/><em>of SafeTech.</em>
+            Security<br/><em>simplified.</em>
           </h1>
           <p class="nv-lede">
-            An AI-powered platform that redefines how security and monitoring
-            solutions are built, delivered, and scaled &mdash; empowering integrators,
-            service providers, and security firms to launch modern SaaS-grade
-            services in weeks, not months.
+            The orchestration platform for launching modern security solutions
+            &mdash; empowering integrators, security firms, and solution developers
+            to ship SaaS-grade services in weeks, not months.
           </p>
         </div>
       </div>

@@ -33,7 +33,11 @@
 
 .ch-5 .founder-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  /* `minmax(0, 1fr)` (not `1fr`) — without the explicit 0 min, the column's
+     implicit min-content rises to the widest nowrap child (e.g. German's
+     4-company `.past` row), and that single card inflates its whole column.
+     Result was uneven card widths across the row. */
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 18px;
   width: 100%;
   max-width: 1280px;
@@ -41,9 +45,11 @@
 
 /* ------------------------------------------------------------------
    Wrapper — owns the chapter-entry stagger so the card's transform
-   is free to animate hover lift without clashing.
+   is free to animate hover lift without clashing. `min-width: 0` so
+   the wrap can't bypass the grid track's `minmax(0, 1fr)` cap.
    ------------------------------------------------------------------ */
 .ch-5 .fc-wrap {
+  min-width: 0;
   opacity: var(--i, 0);
   transform: translateY(calc((1 - var(--i, 0)) * (16px + var(--n, 0) * 6px)));
   transition:
@@ -61,6 +67,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  min-width: 0;
   aspect-ratio: 9 / 16;
   background: rgba(255, 255, 255, 0.88);
   border: 1px solid var(--line-soft);
@@ -146,8 +153,27 @@
   z-index: 1;
 }
 
+/* Portrait image — cutout PNG on transparent bg, fills the cobalt-tinted
+   container. `object-fit: cover` + `object-position: center top` keeps
+   heads framed in the upper portion of the card; the bottom scrim
+   (.portrait::after) darkens beneath for the caption row. */
+.ch-5 .fc .pimg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  z-index: 1;
+  pointer-events: none;
+}
+/* Load-error branch — onerror flips this class and the placeholder
+   underneath becomes the visible state. */
+.ch-5 .fc .pimg.p-failed { display: none; }
+
 /* Portrait placeholder — dashed circle + "PORTRAIT PENDING" stamp.
-   Sits behind everything; swaps out when a real <img> drops in. */
+   Hidden whenever a non-failed <img> is present; surfaces again only
+   on image load error. */
 .ch-5 .fc .pmissing {
   position: absolute;
   inset: 0;
@@ -159,6 +185,7 @@
   gap: 14px;
   pointer-events: none;
 }
+.ch-5 .fc .portrait:has(.pimg:not(.p-failed)) .pmissing { display: none; }
 .ch-5 .fc .pmissing-circle {
   width: 48px;
   height: 48px;
@@ -440,7 +467,7 @@
    ------------------------------------------------------------------ */
 @media (max-width: 1080px) {
   .ch-5 .founder-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     max-width: 720px;
   }
 }

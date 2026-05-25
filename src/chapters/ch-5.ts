@@ -50,132 +50,157 @@ export interface Founder {
   /** Three headline stats. The first two render on the card hover; all
    *  three render in the dossier footer. */
   stats: [FounderStat, FounderStat, FounderStat]
+  /** Public path to the portrait PNG (cutout on transparent bg). The card
+   *  and dossier render an <img> over the cobalt gradient; on load error,
+   *  `.pmissing` placeholder shows through via the `p-failed` CSS branch. */
+  portrait: string
 }
 
+// Real Nevula founders from the May 2026 investor pitch (PDF p.15). Jorge
+// is the technical founder (XPECTRA, 1995); German leads as CEO. Bios use
+// only PDF-confirmed facts; soft fields carry TBD-NOTE markers for later
+// refinement. See NevulaResources/INVESTOR_REWRITE_PLAN.md for the full
+// rationale and source quotes.
 export const FOUNDERS: Founder[] = [
   {
     index: '01',
     role: 'CEO',
-    name: 'Camila Restrepo',
-    tagline: 'Growth strategy & international expansion.',
-    pastCompanies: ['Amazon', 'Microsoft', 'Uber Eats'],
+    name: 'German Perez-Duarte',
+    tagline: 'Continental operator. Scaling LatAm businesses at hyperscale.',
+    pastCompanies: ['Amazon', 'Uber Eats', 'Microsoft', 'Nielsen'],
     bio:
-      'Camila has led global operations at Amazon and shaped startup ecosystems across Latin America — taking new categories from launch to $1B+ ARR and building the GTM org behind expansion into twelve markets. At Nevula she owns growth, partnerships, and the path to enterprise.',
+      'German has led country-scale operations across Latin America — as Country Manager for Amazon Mexico and Head of LatAm for Uber Eats, with earlier leadership at Microsoft and Nielsen. At Nevula he owns strategy, growth, and the path to enterprise.',
     trackRecord: [
       {
         company: 'Amazon',
-        range: '2018 — 2024',
-        description: 'VP, LatAm Operations. Scaled four marketplaces past $1B in annual revenue.',
+        range: 'Recent', // TBD-NOTE: confirm Amazon Mexico tenure years
+        description:
+          'Country Manager, Amazon Mexico. Led the country business across marketplace, logistics, and commercial operations.',
       },
       {
-        company: 'Microsoft',
-        range: '2014 — 2018',
-        description: 'Director, Commercial Expansion. Opened seven new country offices across the region.',
+        company: 'Uber Eats',
+        range: 'Earlier', // TBD-NOTE: confirm Uber Eats date range
+        description:
+          'Head of LatAm. Scaled the regional business across multiple country markets.',
       },
       {
-        company: 'McKinsey & Co.',
-        range: '2010 — 2014',
-        description: 'Engagement Manager, TMT practice. Advised infrastructure operators across LatAm.',
+        company: 'Microsoft · Nielsen',
+        range: 'Earlier career',
+        description:
+          'Leadership roles spanning commercial expansion and consumer insight across the region.',
       },
     ],
     stats: [
-      { value: '$1.4B', label: 'ARR scaled' },
-      { value: '12 ctry', label: 'Markets' },
-      { value: '900', label: 'Teams led' },
+      { value: 'Amazon MX', label: 'Country lead' },
+      { value: 'LatAm', label: 'Uber Eats head' },
+      { value: '20+ yrs', label: 'Operating' }, // TBD-NOTE: tighten years
     ],
+    portrait: `${import.meta.env.BASE_URL}assets/founders/german.png`,
   },
   {
     index: '02',
     role: 'CTO',
-    name: 'Mateo Vargas',
-    tagline: 'IoT platforms & analytics at hyperscale.',
-    pastCompanies: ['Amazon', 'Mercado Libre'],
+    name: 'Jorge Cesin',
+    tagline: '30 years building security infrastructure across LatAm.',
+    pastCompanies: ['XPECTRA', 'netMATRIX'],
     bio:
-      'Mateo built the analytics and IoT systems behind one of the largest marketplaces in the region, handling billions of edge events per day. Before Mercado Libre he led infrastructure teams at Amazon. At Nevula he owns the platform — ingestion, model serving, and the device fabric.',
+      'Jorge founded XPECTRA in 1995 and spent three decades building one of the largest security and IoT operations in Latin America — deploying over five million sensors and shipping more than $35M in contracts. At Nevula he owns the platform: ingestion, orchestration, and the device fabric.',
     trackRecord: [
       {
-        company: 'Mercado Libre',
-        range: '2019 — 2024',
-        description: 'Principal Engineer, Data Platform. Designed the real-time inference pipeline behind core marketplace ranking.',
+        company: 'XPECTRA',
+        range: '1995 — 2024',
+        description:
+          'Founder. Built and scaled XPECTRA to 5M+ sensors deployed and $35M+ in contracts across LatAm.',
       },
       {
-        company: 'Amazon',
-        range: '2013 — 2019',
-        description: 'Senior Engineering Manager, AWS IoT. Built device-fleet management used by industrial customers.',
+        company: 'netMATRIX',
+        range: '2024 — 2025',
+        description:
+          'Led the ideation and engineering effort that turned netMATRIX into the foundation of Nevula.',
       },
       {
-        company: 'Globant',
-        range: '2009 — 2013',
-        description: 'Tech Lead. Shipped backend systems for retail and media clients in the US and EMEA.',
+        company: 'Nevula Tech Inc.',
+        range: '2025 — present',
+        description:
+          'CTO & Founder. Owns the orchestration platform end-to-end — workflow engine, AI, and device fabric.',
       },
     ],
     stats: [
-      { value: '3.2B', label: 'Events / day' },
-      { value: '180+', label: 'Engineers led' },
-      { value: '14', label: 'Patents' },
+      { value: '5M+', label: 'Sensors deployed' },
+      { value: '30 yrs', label: 'Security & IoT' },
+      { value: '$35M+', label: 'Contracts shipped' },
     ],
+    portrait: `${import.meta.env.BASE_URL}assets/founders/jorge.png`,
   },
   {
     index: '03',
-    role: 'COO',
-    name: 'Lucía Ferreira',
-    tagline: 'Multi-region operations & go-to-market.',
-    pastCompanies: ['Microsoft', 'Uber Eats'],
+    role: 'CDO',
+    name: 'Carlos Urgelles',
+    tagline: 'Built and exited Pabis Retail to Accel-KKR.',
+    pastCompanies: ['Pabis Retail', 'Accel-KKR'],
     bio:
-      'Lucía has run multi-region operations across Latin America for over a decade — scaling Uber Eats from launch into a $1B regional business and rebuilding Microsoft\'s partner channel across eight countries. At Nevula she owns delivery, partnerships, and the field network.',
+      'Carlos founded and led Pabis Retail as CEO through its acquisition by Accel-KKR in 2023. He has spent his career building and operating technology businesses across the region. At Nevula he owns commercial strategy — partnerships, GTM, and the integrator channel.',
     trackRecord: [
       {
-        company: 'Uber Eats',
-        range: '2017 — 2023',
-        description: 'Regional GM, LatAm. Launched in five countries and scaled the business past $1B in annual GMV.',
+        company: 'Pabis Retail',
+        range: 'Founded — 2023', // TBD-NOTE: confirm founding year
+        description:
+          'Founder & CEO. Built the company end-to-end through its acquisition by Accel-KKR in 2023.',
       },
       {
-        company: 'Microsoft',
-        range: '2011 — 2017',
-        description: 'Director, Partner Channel. Rebuilt the partner program across eight countries.',
+        company: 'Accel-KKR',
+        range: '2023 — present',
+        description:
+          'Continued leadership post-acquisition at the Accel-KKR portfolio.', // TBD-NOTE: clarify post-acquisition scope
       },
       {
-        company: 'Bain & Company',
-        range: '2007 — 2011',
-        description: 'Manager, Consumer & Retail practice. Led GTM engagements for global brands in the region.',
+        company: 'Earlier ventures',
+        range: 'Earlier career',
+        description:
+          'Operating and founding roles in technology and retail across LatAm.', // TBD-NOTE: name specific prior companies if approved
       },
     ],
     stats: [
-      { value: '$1.1B', label: 'GMV scaled' },
-      { value: '8 ctry', label: 'Markets opened' },
-      { value: '2.4K', label: 'Field ops' },
+      { value: '1', label: 'Exit (Accel-KKR)' },
+      { value: 'Founder', label: 'Pabis Retail' },
+      { value: 'LatAm', label: 'Operator' }, // TBD-NOTE: replace w/ concrete number
     ],
+    portrait: `${import.meta.env.BASE_URL}assets/founders/carlos.png`,
   },
   {
     index: '04',
-    role: 'CFO',
-    name: 'Andrés Pinto',
-    tagline: 'Corporate development & venture investing.',
-    pastCompanies: ['Kaszek', 'Globant'],
+    role: 'CMO',
+    name: 'Hector Ruvalcaba',
+    tagline: 'Brand strategist. Mexico Entrepreneur of the Year.',
+    pastCompanies: ['Mexico EOY', 'MIT Fire Hydrant'],
     bio:
-      'Andrés built and exited multiple LatAm technology businesses before turning to venture investing at Kaszek, where he led growth-stage deals across SaaS and fintech. At Nevula he owns finance, capital strategy, and corporate development.',
+      'Hector is a PR and marketing strategist recognized as Mexico Entrepreneur of the Year and an MIT Fire Hydrant Award honoree. At Nevula he owns brand, marketing, and category positioning.',
     trackRecord: [
       {
-        company: 'Kaszek',
-        range: '2019 — 2024',
-        description: 'Principal. Led growth-stage investments in SaaS, fintech, and B2B platforms.',
+        company: 'Mexico Entrepreneur of the Year',
+        range: 'National award',
+        description:
+          'Recognized for entrepreneurial leadership in Mexico.', // TBD-NOTE: confirm award year + governing body
       },
       {
-        company: 'Globant',
-        range: '2014 — 2019',
-        description: 'VP, Corporate Development. Closed nine acquisitions and the company\'s secondary offering.',
+        company: 'MIT Fire Hydrant Award',
+        range: 'Recognition',
+        description:
+          'MIT honoree for contribution to industry innovation.', // TBD-NOTE: confirm award context + year
       },
       {
-        company: 'BBVA',
-        range: '2008 — 2014',
-        description: 'Director, M&A. Advised on fintech and infrastructure deals across South America.',
+        company: 'Earlier career',
+        range: 'PR · Marketing',
+        description:
+          'Senior brand and communications leadership across consumer and enterprise categories.', // TBD-NOTE: list specific agency or brand engagements
       },
     ],
     stats: [
-      { value: '$320M', label: 'Capital deployed' },
-      { value: '17', label: 'Deals closed' },
-      { value: '4', label: 'Exits' },
+      { value: 'EOY', label: 'Mexico' },
+      { value: 'MIT', label: 'Fire Hydrant' },
+      { value: 'Brand', label: 'Strategist' }, // TBD-NOTE: replace w/ concrete number
     ],
+    portrait: `${import.meta.env.BASE_URL}assets/founders/hector.png`,
   },
 ]
 
@@ -194,6 +219,8 @@ function renderCard(f: Founder, i: number): string {
       <article class="fc" data-index="${f.index}" tabindex="0" role="button"
                aria-label="Open ${f.name} dossier">
         <div class="portrait" aria-hidden="true">
+          <img class="pimg" src="${f.portrait}" alt=""
+               onerror="this.classList.add('p-failed')">
           <div class="pmissing">
             <span class="pmissing-circle"></span>
             <span class="pmissing-label">Portrait pending</span>
@@ -235,11 +262,11 @@ function renderCard(f: Founder, i: number): string {
 
 export function renderChapter5(): HTMLElement {
   const root = htmlEl(`
-    <section class="nv-chapter ch-5" data-chapter="8" data-screen-label="08 Founders">
+    <section class="nv-chapter ch-5" data-chapter="9" data-screen-label="09 Founders">
       <div class="layout">
         <div class="ch5-head">
           <div class="nv-eyebrow">
-            <span class="num">08</span>
+            <span class="num">09</span>
             <span class="bar"></span>
             <span>The Team</span>
           </div>

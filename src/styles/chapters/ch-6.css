@@ -42,5 +42,17 @@
   box-shadow: 0 0 8px var(--orange-500);
 }
 
-.ch-6 .nv-stat-strip { margin-top: 36px; }
+/* ch-6 uses a 4-cell stat strip (seed · SOM · sensors · logos) — override
+   the shared 3-column layout from layout.css. `minmax(0, 1fr)` (not `1fr`)
+   so a long value like "$1.5B SOM" can't inflate a single column past the
+   others — same fix as the ch-5 founder grid. Width inherits the shared
+   880px/90vw cap so the strip never collides with the chapter rail on the
+   right. */
+.ch-6 .nv-stat-strip {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: 36px;
+}
+.ch-6 .nv-stat-strip .cell { padding: 20px 14px; }
+.ch-6 .nv-stat-strip .cell .v { font-size: 32px; }
+.ch-6 .nv-stat-strip .cell .v .u { font-size: 11px; }
 .ch-6 .nv-ctas { margin-top: 36px; }

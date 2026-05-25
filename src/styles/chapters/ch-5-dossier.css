@@ -115,6 +115,23 @@ body.fd-open { overflow: hidden; }
   display: grid;
   place-items: center;
 }
+/* Dossier portrait image — same cutout PNG as the card, sized to fill
+   the .fd-preview-portrait box. Placeholder hides when img is healthy
+   and resurfaces only on load error. */
+.fd-preview-portrait .fd-preview-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  border-radius: inherit;
+}
+.fd-preview-portrait .fd-preview-img.p-failed { display: none; }
+.fd-preview-portrait:has(.fd-preview-img:not(.p-failed)) .fc-portrait-placeholder {
+  display: none;
+}
+
 .fd-preview-portrait .fc-portrait-placeholder {
   position: static;
   display: flex;

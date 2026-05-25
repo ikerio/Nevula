@@ -62,6 +62,8 @@ function buildDossier(f: Founder): HTMLElement {
             <span class="fd-preview-tick"></span>
           </div>
           <div class="fd-preview-portrait">
+            <img class="fd-preview-img" src="${f.portrait}" alt=""
+                 onerror="this.classList.add('p-failed')">
             <div class="fc-portrait-placeholder">
               <div class="fc-portrait-circle"></div>
               <div class="fc-portrait-label">Portrait pending</div>

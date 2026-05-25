@@ -3,11 +3,11 @@ import '../styles/chapters/ch-6.css'
 
 export function renderChapter6(): HTMLElement {
   return htmlEl(`
-    <section class="nv-chapter ch-6" data-chapter="9" data-screen-label="09 Closing">
+    <section class="nv-chapter ch-6" data-chapter="10" data-screen-label="10 Closing">
       <div class="layout">
         <div class="closing-text">
           <div class="nv-eyebrow">
-            <span class="num">09</span>
+            <span class="num">10</span>
             <span class="bar"></span>
             <span>One platform &middot; Every industry</span>
           </div>
@@ -24,16 +24,20 @@ export function renderChapter6(): HTMLElement {
 
           <div class="nv-stat-strip">
             <div class="cell">
-              <span class="nm">deployment</span>
-              <span class="v">7<span class="u">days</span></span>
+              <span class="nm">seed round</span>
+              <span class="v">$3<span class="u">M</span></span>
             </div>
             <div class="cell">
-              <span class="nm">platform uptime</span>
-              <span class="v">99.98<span class="u">%</span></span>
+              <span class="nm">initial wedge</span>
+              <span class="v">$1.5<span class="u">B SOM</span></span>
             </div>
             <div class="cell">
-              <span class="nm">protocols</span>
-              <span class="v">14<span class="u">supported</span></span>
+              <span class="nm">sensors deployed</span>
+              <span class="v">5<span class="u">M+</span></span>
+            </div>
+            <div class="cell">
+              <span class="nm">enterprise logos</span>
+              <span class="v">11<span class="u">clients</span></span>
             </div>
           </div>
 
