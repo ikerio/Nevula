@@ -2,6 +2,7 @@ import gsap from 'gsap'
 import { htmlEl } from '../lib/dom'
 import nevulaTextSvg from '../assets/NevulaText.svg?raw'
 import { mountIntroAtmospherics } from './intro-atmospherics'
+import { mountNetworkHorizon, type NetworkHorizonHandle } from './intro-network-horizon'
 import '../styles/intro-overlay.css'
 
 export interface IntroOverlay {
@@ -180,6 +181,14 @@ export function mountIntroOverlay(opts: IntroOverlayOptions): IntroOverlay {
   // natural stacking order puts it under .intro-wordmark.
   overlay.insertBefore(mountIntroAtmospherics(), overlay.firstChild)
 
+  // Three.js network horizon — sits BETWEEN the SVG atmospherics and the
+  // wordmark. Renders a quiet hemisphere of nodes + connections + lifting
+  // particles behind the brand mark. Mounted as a sibling after atmospherics
+  // (so it stacks above SVG but below the wordmark — wordmark is appended
+  // separately to its own host below).
+  const horizon: NetworkHorizonHandle = mountNetworkHorizon()
+  overlay.insertBefore(horizon.el, overlay.querySelector('.intro-wordmark'))
+
   const wordmarkHost = overlay.querySelector('.intro-wordmark')!
   const svgEl = buildWordmarkSvg()
   wordmarkHost.appendChild(svgEl)
@@ -284,6 +293,11 @@ export function mountIntroOverlay(opts: IntroOverlayOptions): IntroOverlay {
       ease: 'power2.in',
     })
 
+    // Drive the horizon's own internal opacity ramp to zero in parallel
+    // with the CSS opacity transition. The component multiplies its
+    // uOpacity by the CSS opacity, so this gives a clean fade.
+    horizon.fadeOut(DISSOLVE_DURATION * 1000 * 0.7).catch(() => {})
+
     exitTimer = window.setTimeout(() => {
       overlay.classList.add('is-exited')
       opts.onExitComplete()
@@ -317,6 +331,7 @@ export function mountIntroOverlay(opts: IntroOverlayOptions): IntroOverlay {
       window.removeEventListener('click', onClick)
       window.removeEventListener('keydown', onKey)
       document.body.style.overflow = prevOverflow
+      horizon.dispose()
       overlay.remove()
     },
   }
