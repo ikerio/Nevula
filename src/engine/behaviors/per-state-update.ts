@@ -66,6 +66,17 @@ export function applyStateBehavior(slot: SlotInternal, t: number): void {
       pos[ix + 1] = target[ix + 1]
       pos[ix + 2] = target[ix + 2]
     }
+  } else if (state === 'traction') {
+    // Traction is animation-driven (tickTraction recomputed target each
+    // frame: flow particles travel Beziers, spine drifts L→R, clusters
+    // breathe). Adding wiggle on top would dilute the directional motion —
+    // just copy target → pos.
+    for (let i = 0; i < count; i++) {
+      const ix = i * 3
+      pos[ix]     = target[ix]
+      pos[ix + 1] = target[ix + 1]
+      pos[ix + 2] = target[ix + 2]
+    }
   } else if (state === 'nebula') {
     for (let i = 0; i < count; i++) {
       const ix = i * 3

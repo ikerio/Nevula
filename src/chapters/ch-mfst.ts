@@ -8,11 +8,11 @@ import '../styles/chapters/ch-mfst.css'
  */
 export function renderChapterMfst(): HTMLElement {
   return htmlEl(`
-    <section class="nv-chapter ch-mfst" data-chapter="7" data-screen-label="07 Manifesto">
+    <section class="nv-chapter ch-mfst" data-chapter="8" data-screen-label="08 Manifesto">
       <div class="layout">
         <div class="mfst">
           <div class="nv-eyebrow">
-            <span class="num">07</span>
+            <span class="num">08</span>
             <span class="bar"></span>
             <span>The Bigger Picture</span>
           </div>

@@ -12,6 +12,7 @@ import {
   resetPublicSafetyTrails,
 } from './states/public-safety'
 import { tickMicroprocessorAnimation, resetMicroprocessor } from './states/microprocessor'
+import { tickTraction } from './states/traction'
 
 /** Duration (ms) of each half of the blending crossfade (fade-out + fade-in). */
 const BLEND_FADE_MS = 120
@@ -94,7 +95,7 @@ export function makeSlot(pixelRatio: number, optsIn: SlotOptions): SlotInternal 
       depthWrite: false,
     })
     lineSegs = new THREE.LineSegments(linesGeo, linesMat)
-    lineSegs.visible = (opts.state === 'constellation')
+    lineSegs.visible = (opts.state === 'constellation' || opts.state === 'traction')
     scene.add(lineSegs)
   }
 
@@ -146,7 +147,7 @@ export function setSlotState(slot: SlotInternal, state: ParticleState): void {
   slot.pendingTargets = fn(slot.count)
   slot.pendingColors = colorize(slot.count, state)
   slot.isMorphing = true
-  if (slot.lineSegs) slot.lineSegs.visible = (state === 'constellation')
+  if (slot.lineSegs) slot.lineSegs.visible = (state === 'constellation' || state === 'traction')
 
   // Reset per-particle alpha — the logo trail particles may have left
   // aAlpha at fractional values; without this they'd be partially invisible
@@ -250,6 +251,12 @@ export function updateSlot(slot: SlotInternal, t: number, dt: number = 0): void 
   // for chip hover raycasting.
   if (slot.state === 'microprocessor' && !slot.isMorphing) {
     tickMicroprocessorAnimation(target, count, dt, slot.points, slot.camera)
+  }
+  // Traction — flow particles travel along their Bezier paths, spine particles
+  // drift left→right, clusters breathe. Skipped during morph so the chapter's
+  // morph-in animation isn't fighting the path animation.
+  if (slot.state === 'traction' && !slot.isMorphing) {
+    tickTraction(target, count, t, dt)
   }
 
   // Per-state position drift around target.

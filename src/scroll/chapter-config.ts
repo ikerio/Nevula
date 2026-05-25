@@ -22,6 +22,12 @@ export const CHAPTERS: ChapterConfig[] = [
   { key: 'commandctrs', state: 'building',      scale: 1.00, offset: [-0.55, 0.00],               label: 'Command' },
   { key: 'marketplace', state: 'home',          scale: 0.95, offset: [0.00, -0.30],               label: 'Marketplace' },
   { key: 'builtfor',    state: 'device',        scale: 1.05, offset: [-0.55, 0.05],               label: 'Built for' },
+  // Traction uses its own bespoke `traction` particle state — 4 cluster
+  // anchors mapped behind each partner card, faint convergence Beziers
+  // toward a center point, and a horizontal spine that aligns with the
+  // chapter's trajectory rail. Offset [0, 0] keeps it centered behind the
+  // chapter content rather than shifted to one side.
+  { key: 'traction',    state: 'traction',      scale: 1.00, offset: [0.00,  0.00],               label: 'Traction' },
   { key: 'manifesto',   state: 'nebula',        scale: 1.10, offset: [0.00,  0.00],               label: 'Ecosystem' },
   { key: 'founders',    state: 'nebula',        scale: 0.85, offset: [0,    -0.20],               label: 'Founders' },
   { key: 'closing',     state: 'logo',          scale: 1.15, offset: [0,     0],     size: 0.030, label: 'Get started' },

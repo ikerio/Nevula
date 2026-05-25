@@ -1,0 +1,354 @@
+/* Chapter — Traction
+   Three signed-LOI cards + one ADT "Pilot live" card highlighted with an
+   orange glow ring, followed by a three-segment horizontal trajectory bar.
+   Layout: head (centered) → 4-card row → trajectory below. */
+
+.ch-traction .layout {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 56px 6vw 56px;
+  gap: 28px;
+}
+
+/* ------------------------------------------------------------------
+   Head — centered eyebrow + title + lede.
+   ------------------------------------------------------------------ */
+.ch-traction .trc-head {
+  text-align: center;
+  max-width: 760px;
+  position: relative;
+  isolation: isolate;
+  transform: translateY(calc((1 - var(--i, 0)) * 16px));
+}
+/* Radial scrim behind the head text — the chapter's particle state is
+   `constellation` (dense + with connector lines), which obscures the
+   title/lede without an underlay. Same pattern used by ch-mfst and the
+   ch-3 head. */
+.ch-traction .trc-head::before {
+  content: "";
+  position: absolute;
+  inset: -80px -160px;
+  background: radial-gradient(ellipse 60% 60% at 50% 50%,
+    rgba(246, 247, 251, 0.92) 0%,
+    rgba(246, 247, 251, 0.72) 35%,
+    rgba(246, 247, 251, 0.36) 65%,
+    rgba(246, 247, 251, 0.0)  100%);
+  z-index: -1;
+  pointer-events: none;
+}
+.ch-traction .trc-head .nv-eyebrow { justify-content: center; }
+.ch-traction .trc-head .nv-title   { text-align: center; }
+.ch-traction .trc-head .nv-lede {
+  margin: 18px auto 0;
+  text-align: center;
+  max-width: 620px;
+}
+
+/* ------------------------------------------------------------------
+   Partner cards — 4 in a row, equal width (minmax(0, 1fr) so a long
+   meta line can't inflate any single card past the others — same fix
+   we used on the founder grid).
+   ------------------------------------------------------------------ */
+.ch-traction .trc-cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  width: 100%;
+  max-width: 1180px;
+}
+
+.ch-traction .trc-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  padding: 20px 20px 22px;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-md);
+  backdrop-filter: blur(12px) saturate(1.04);
+  -webkit-backdrop-filter: blur(12px) saturate(1.04);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.7) inset,
+    0 14px 28px -22px rgba(10, 15, 31, 0.20);
+
+  /* Per-card entry stagger driven by --n (0..3). */
+  opacity: var(--i, 0);
+  transform: translateY(calc((1 - var(--i, 0)) * (16px + var(--n, 0) * 6px)));
+  transition:
+    transform 380ms var(--ease-out),
+    opacity 320ms var(--ease-out);
+  transition-delay: calc(var(--n, 0) * 80ms);
+}
+
+/* ADT pilot card — orange glow ring + thicker border. The ring is a
+   `box-shadow` so it doesn't shift layout; the dotted-rail effect on
+   the badge dot is the other "live" cue. */
+.ch-traction .trc-card.is-live {
+  border-color: rgba(255, 102, 0, 0.45);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.7) inset,
+    0 0 0 1px rgba(255, 102, 0, 0.30),
+    0 18px 36px -22px rgba(255, 102, 0, 0.40),
+    0 14px 28px -22px rgba(10, 15, 31, 0.20);
+}
+
+/* Top row — small badge on left, index numeral on right. */
+.ch-traction .trc-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.ch-traction .trc-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-300);
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(10, 15, 31, 0.04);
+  border: 1px solid var(--line-soft);
+}
+.ch-traction .trc-badge .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ink-400);
+}
+.ch-traction .trc-badge.is-live {
+  color: var(--orange-500);
+  background: rgba(255, 102, 0, 0.08);
+  border-color: rgba(255, 102, 0, 0.35);
+}
+.ch-traction .trc-badge.is-live .dot {
+  background: var(--orange-500);
+  box-shadow: 0 0 8px var(--orange-500);
+  animation: trc-live-pulse 1.6s ease-in-out infinite;
+}
+@keyframes trc-live-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.55; transform: scale(1.25); }
+}
+
+.ch-traction .trc-ix {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  color: var(--ink-400);
+}
+
+/* Name + meta — the partner identity line. */
+.ch-traction .trc-name {
+  margin: 4px 0 0;
+  font-family: var(--font-display);
+  font-size: 21px;
+  font-weight: 500;
+  letter-spacing: -0.014em;
+  color: var(--ink-100);
+  line-height: 1.1;
+}
+.ch-traction .trc-meta {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 12.5px;
+  font-weight: 400;
+  color: var(--ink-300);
+  line-height: 1.35;
+}
+
+/* Footer stat — label + value, hairline divider on top. */
+.ch-traction .trc-stat {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--line-hair);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.ch-traction .trc-stat .lbl {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-400);
+}
+.ch-traction .trc-stat .v {
+  font-family: var(--font-display);
+  font-size: 13.5px;
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  color: var(--ink-100);
+}
+.ch-traction .trc-stat .v strong {
+  font-weight: 600;
+  font-size: 18px;
+  margin-right: 4px;
+  font-feature-settings: "tnum";
+}
+
+/* ------------------------------------------------------------------
+   Trajectory bar — XPECTRA (1995–2024) → netMATRIX (2025) → Nevula (2026).
+   Horizontal rail with three nodes; "now" node (2026) gets the orange dot.
+   ------------------------------------------------------------------ */
+.ch-traction .trc-trajectory {
+  width: 100%;
+  max-width: 1180px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 4px;
+  position: relative;
+  isolation: isolate;
+  opacity: var(--i, 0);
+  transform: translateY(calc((1 - var(--i, 0)) * 22px));
+  transition:
+    transform 420ms var(--ease-out),
+    opacity 360ms var(--ease-out);
+  transition-delay: 360ms;
+}
+/* Scrim behind the trajectory — without it, the constellation particles
+   bleed through the segment copy and reduce legibility. Mirrors the
+   .trc-head scrim but slightly wider so it covers the full 3-column
+   segment row at desktop width. */
+.ch-traction .trc-trajectory::before {
+  content: "";
+  position: absolute;
+  inset: -36px -160px;
+  background: radial-gradient(ellipse 70% 80% at 50% 50%,
+    rgba(246, 247, 251, 0.88) 0%,
+    rgba(246, 247, 251, 0.66) 40%,
+    rgba(246, 247, 251, 0.30) 75%,
+    rgba(246, 247, 251, 0.0)  100%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.ch-traction .trc-traj-rail {
+  position: relative;
+  height: 14px;
+}
+.ch-traction .trc-traj-line {
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  top: 50%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--ink-300) 0%, var(--ink-300) 50%, var(--orange-500) 100%);
+  border-radius: 1px;
+  transform: translateY(-1px);
+}
+.ch-traction .trc-traj-node {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid var(--ink-300);
+}
+.ch-traction .trc-traj-node.now {
+  background: var(--orange-500);
+  border-color: var(--orange-500);
+  box-shadow: 0 0 10px var(--orange-500);
+}
+
+.ch-traction .trc-traj-segments {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+.ch-traction .trc-seg {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 4px;
+}
+.ch-traction .trc-seg-range {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-300);
+}
+.ch-traction .trc-seg:nth-child(3) .trc-seg-range {
+  color: var(--orange-500);
+}
+.ch-traction .trc-seg h6 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: -0.012em;
+  color: var(--ink-100);
+}
+/* Body copy was --ink-400 (very light) — barely readable against the
+   constellation particles. Bumped to --ink-200 + 11px to hold up. */
+.ch-traction .trc-seg p {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--ink-200);
+  max-width: 360px;
+}
+
+/* ------------------------------------------------------------------
+   Compact desktop — 14" MBP. Shrink head, cards, and trajectory copy.
+   ------------------------------------------------------------------ */
+@media (max-height: 900px), (max-width: 1600px) {
+  .ch-traction .layout {
+    padding: 44px 6vw 40px;
+    gap: 22px;
+  }
+  .ch-traction .trc-head .nv-title.size-l {
+    font-size: clamp(30px, 3.8vw, 54px);
+    line-height: 1.02;
+  }
+  .ch-traction .trc-head .nv-lede {
+    margin-top: 12px;
+    font-size: clamp(12.5px, 1.0vw, 15px);
+    max-width: 560px;
+  }
+  .ch-traction .trc-cards { max-width: 1080px; gap: 12px; }
+  .ch-traction .trc-card { padding: 16px 16px 18px; }
+  .ch-traction .trc-name { font-size: 19px; }
+  .ch-traction .trc-meta { font-size: 11.5px; }
+  .ch-traction .trc-stat .v { font-size: 12.5px; }
+  .ch-traction .trc-stat .v strong { font-size: 16px; }
+  .ch-traction .trc-trajectory { max-width: 1080px; }
+  .ch-traction .trc-seg h6 { font-size: 15px; }
+  .ch-traction .trc-seg p { font-size: 10.5px; }
+}
+
+/* ------------------------------------------------------------------
+   Responsive — 2×2 below 1080px.
+   ------------------------------------------------------------------ */
+@media (max-width: 1080px) {
+  .ch-traction .trc-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 700px;
+  }
+  .ch-traction .trc-traj-segments {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .ch-traction .trc-traj-rail { display: none; }
+  .ch-traction .trc-seg p { max-width: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ch-traction .trc-badge.is-live .dot { animation: none !important; }
+  .ch-traction .trc-card,
+  .ch-traction .trc-trajectory { transition: none !important; }
+}

@@ -32,6 +32,7 @@ export const STATE_BLENDING: Record<ParticleState, THREE.Blending> = {
   trails:          THREE.AdditiveBlending,
   'public-safety': THREE.NormalBlending,
   'microprocessor': THREE.NormalBlending,
+  'traction':      THREE.NormalBlending,
 }
 
 export interface ParticleMaterialOptions {

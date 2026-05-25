@@ -1,6 +1,6 @@
 /**
- * The 9 possible particle states. Defined here (duplicated in engine/types.ts
- * in Phase 3) so the scroll engine compiles without depending on the engine yet.
+ * Particle states. Defined here (duplicated in engine/types.ts) so the scroll
+ * engine compiles without depending on the engine yet.
  */
 export type ParticleState =
   | 'nebula'
@@ -14,6 +14,7 @@ export type ParticleState =
   | 'device'
   | 'public-safety'
   | 'microprocessor'
+  | 'traction'
 
 export interface ChapterConfig {
   key: string

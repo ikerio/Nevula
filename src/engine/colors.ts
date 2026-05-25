@@ -3,6 +3,7 @@ import type { ParticleState } from './types'
 import { getLogoTags, getLogoCachedColors } from './states/logo'
 import { getPublicSafetyCachedColors } from './states/public-safety'
 import { getMicroprocessorCachedColors } from './states/microprocessor'
+import { getTractionCachedColors } from './states/traction'
 
 // Official Nevula brand colors — Manuel Valdez guidelines v#3.
 //   azul   #00529C  ·  naranja #FF6600  ·  negro #000000
@@ -38,6 +39,13 @@ export function colorize(count: number, state: ParticleState): Float32Array {
   // for brand coherence.
   if (state === 'microprocessor') {
     const direct = getMicroprocessorCachedColors()
+    if (direct && direct.length === count * 3) return direct.slice()
+  }
+  // Traction caches per-particle colors at generation time (cluster role,
+  // ADT orange accents, spine right-end orange gradient) so we route them
+  // through the direct override path rather than the random palette below.
+  if (state === 'traction') {
+    const direct = getTractionCachedColors()
     if (direct && direct.length === count * 3) return direct.slice()
   }
   const c = new Float32Array(count * 3)

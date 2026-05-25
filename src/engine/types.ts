@@ -15,6 +15,7 @@ export type ParticleState =
   | 'device'
   | 'public-safety'
   | 'microprocessor'
+  | 'traction'
 
 /** Returns count*3 Float32Array of XYZ positions in roughly [-1.5, 1.5]. */
 export type StateGenerator = (count: number) => Float32Array
