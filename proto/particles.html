@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nevula — Particle Field Prototype</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      /* Brand tokens lifted verbatim from src/styles/tokens.css so the proto
+         reads in the exact v1 silver visual language as the live landing. */
+      :root {
+        --bg-base: #e6e8ef;
+        --ink-100: #0a0f1f;
+        --ink-200: #1a2240;
+        --ink-300: #3d4866;
+        --ink-400: #6c778f;
+        --brand-azul: #00529c;
+        --brand-naranja: #ff6600;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; height: 100%; }
+      body {
+        /* Page background copied from src/styles/globals.css — soft azul pools
+           over a matte-silver radial. The WebGL canvas is alpha-transparent
+           and floats on top, so the bloomed particles sit on this surface. */
+        background:
+          radial-gradient(60% 45% at 18% 12%,  rgba(0, 82, 156, 0.22) 0%, transparent 60%),
+          radial-gradient(55% 50% at 88% 38%,  rgba(0, 82, 156, 0.16) 0%, transparent 65%),
+          radial-gradient(70% 55% at 50% 92%,  rgba(0, 82, 156, 0.14) 0%, transparent 60%),
+          radial-gradient(90% 70% at 50% 50%,  #eef0f6 0%, #e2e5ed 60%, #d6d9e2 100%) fixed;
+        font-family: 'Manrope', system-ui, sans-serif;
+        color: var(--ink-200);
+        overflow: hidden;
+      }
+
+      #field {
+        position: fixed; inset: 0;
+        width: 100vw; height: 100vh;
+        display: block; z-index: 0;
+      }
+
+      .title { position: fixed; top: 30px; left: 34px; z-index: 2; pointer-events: none; }
+      .title .k {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase;
+        color: var(--brand-naranja);
+      }
+      .title .t { font-weight: 300; font-size: clamp(22px, 3vw, 36px); margin-top: 8px; color: var(--ink-100); }
+      .title .s { font-size: 13px; line-height: 1.5; color: var(--ink-400); margin-top: 6px; max-width: 44ch; }
+
+      .panel {
+        position: fixed; top: 24px; right: 24px; z-index: 3; width: 272px;
+        background: rgba(244, 246, 250, 0.85);
+        backdrop-filter: blur(14px) saturate(1.05);
+        -webkit-backdrop-filter: blur(14px) saturate(1.05);
+        border: 1px solid rgba(10, 15, 31, 0.10);
+        border-radius: 14px; padding: 16px 16px 14px;
+        box-shadow: 0 18px 50px -20px rgba(10, 15, 31, 0.40);
+        font-size: 12px; max-height: calc(100vh - 48px); overflow-y: auto;
+      }
+      .panel h3 {
+        margin: 0 0 12px; font-size: 11px; letter-spacing: 0.18em;
+        text-transform: uppercase; color: var(--ink-400); font-weight: 600;
+      }
+      .group-label {
+        font-family: 'JetBrains Mono', monospace; font-size: 10px;
+        letter-spacing: 0.16em; text-transform: uppercase;
+        color: var(--brand-azul); margin: 14px 0 8px;
+      }
+      .row { margin-bottom: 11px; }
+      .row label {
+        display: flex; justify-content: space-between;
+        font-size: 11px; color: var(--ink-200); margin-bottom: 5px; font-weight: 500;
+      }
+      .row label .v { font-family: 'JetBrains Mono', monospace; color: var(--brand-azul); }
+      input[type='range'] { width: 100%; accent-color: var(--brand-naranja); height: 3px; cursor: pointer; }
+      .seg { display: flex; gap: 6px; margin-bottom: 4px; }
+      .seg button {
+        flex: 1; padding: 7px 4px; font-size: 11px; font-family: inherit; cursor: pointer;
+        border: 1px solid rgba(10, 15, 31, 0.14); background: rgba(255, 255, 255, 0.5);
+        color: var(--ink-300); border-radius: 8px; transition: all 0.15s;
+      }
+      .seg button.on { background: var(--ink-100); color: #fff; border-color: var(--ink-100); }
+      .hr { height: 1px; background: rgba(10, 15, 31, 0.10); margin: 6px 0 0; }
+      .foot { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; }
+      .fps { font-family: 'JetBrains Mono', monospace; color: var(--ink-400); font-size: 11px; }
+      .foot button {
+        font-family: inherit; font-size: 11px; padding: 6px 12px; border-radius: 7px; cursor: pointer;
+        border: 1px solid rgba(10, 15, 31, 0.14); background: rgba(255, 255, 255, 0.6); color: var(--ink-200);
+      }
+      .foot button:hover { background: #fff; }
+
+      .hint {
+        position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+        z-index: 2; pointer-events: none;
+        font-family: 'JetBrains Mono', monospace; font-size: 11px;
+        letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-400);
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="field"></canvas>
+
+    <div class="title">
+      <div class="k">Prototype · particle field v0</div>
+      <div class="t">Orchestration field</div>
+      <div class="s">
+        Move your cursor through the field — it parts around you, and live links
+        weave between the nearby nodes. Tune everything in the panel.
+      </div>
+    </div>
+
+    <div class="hint">Move the cursor &nbsp;·&nbsp; tune in the panel &nbsp;→</div>
+
+    <aside class="panel" id="panel"></aside>
+
+    <script type="module" src="./particles.ts"></script>
+  </body>
+</html>
