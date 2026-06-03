@@ -4,6 +4,7 @@ import { getLogoTags, getLogoCachedColors } from './states/logo'
 import { getPublicSafetyCachedColors } from './states/public-safety'
 import { getMicroprocessorCachedColors } from './states/microprocessor'
 import { getTractionCachedColors } from './states/traction'
+import { snoise } from './noise'
 
 // Official Nevula brand colors — Manuel Valdez guidelines v#3.
 //   azul   #00529C  ·  naranja #FF6600  ·  negro #000000
@@ -20,7 +21,7 @@ export const WHITE        = new THREE.Color('#1a2240')
  * Per-state color generator. Reads `_logoTags` (per-particle region tags)
  * from states/logo when state === 'logo'.
  */
-export function colorize(count: number, state: ParticleState): Float32Array {
+export function colorize(count: number, state: ParticleState, positions?: Float32Array): Float32Array {
   // GLB-sampled logo writes direct material colors per particle — bypass the
   // random palette entirely so the brand mesh reads with its baked colors.
   if (state === 'logo') {
@@ -88,8 +89,17 @@ export function colorize(count: number, state: ParticleState): Float32Array {
       // cobalt-dominant so it reads as the same brand.
       col = r < 0.10 ? ORANGE : (r < 0.14 ? WHITE : (r < 0.7 ? COBALT_DEEP : COBALT))
     } else {
-      // nebula
-      col = r < 0.7 ? COBALT_DEEP : (r < 0.92 ? COBALT : ORANGE)
+      // nebula — orange biased into low-frequency "warm zones" over position so
+      // there are real cool/warm regions, which the gas cloud samples + mirrors.
+      if (positions) {
+        const wx = positions[i * 3], wy = positions[i * 3 + 1], wz = positions[i * 3 + 2]
+        const warm = snoise(wx * 1.2 + 11.0, wy * 1.2 - 4.0, wz * 1.2)   // [-1, 1]
+        const pOrange = 0.05 + Math.max(0, warm - 0.15) * 0.85
+        if (r < pOrange) col = Math.random() < 0.65 ? ORANGE : ORANGE_SOFT
+        else             col = Math.random() < 0.78 ? COBALT_DEEP : COBALT
+      } else {
+        col = r < 0.7 ? COBALT_DEEP : (r < 0.92 ? COBALT : ORANGE)
+      }
     }
     c[i * 3]     = col.r
     c[i * 3 + 1] = col.g

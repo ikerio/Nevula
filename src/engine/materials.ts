@@ -11,6 +11,12 @@ export interface ParticleUniforms {
   uBlendFade: { value: number }
   uFogColor: { value: THREE.Color }
   uFogDensity: { value: number }
+  /** Elapsed time (seconds), driven each frame — powers the twinkle shimmer. */
+  uTime: { value: number }
+  /** Per-particle exponential halo strength (each dot carries its own light). */
+  uGlow: { value: number }
+  /** Twinkle amount [0..1] — subtle per-particle size + alpha scintillation. */
+  uTwinkle: { value: number }
 }
 
 /**
@@ -46,6 +52,10 @@ export interface ParticleMaterialOptions {
   fogColor?: number
   /** FogExp2 density. 0 disables fog. Default 0 (off). */
   fogDensity?: number
+  /** Per-particle halo strength. Default 0.55. */
+  glow?: number
+  /** Twinkle amount [0..1]. Default 0.35. */
+  twinkle?: number
 }
 
 /** Builds the shared Points ShaderMaterial used by both background + slots. */
@@ -60,6 +70,9 @@ export function createParticleMaterial(opts: ParticleMaterialOptions): {
     uBlendFade:  { value: 1.0 },
     uFogColor:   { value: new THREE.Color(opts.fogColor ?? 0xe6e8ef) },
     uFogDensity: { value: opts.fogDensity ?? 0 },
+    uTime:       { value: 0 },
+    uGlow:       { value: opts.glow ?? 0.55 },
+    uTwinkle:    { value: opts.twinkle ?? 0.35 },
   }
   const material = new THREE.ShaderMaterial({
     // Cast: ShaderMaterial expects a loose { [key]: IUniform } index, but we

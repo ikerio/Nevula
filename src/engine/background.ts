@@ -20,6 +20,7 @@ export function NevulaBackground(opts: SlotOptions = {}): FieldHandle {
     interactive: true,
     fogColor:   0xe6e8ef,
     fogDensity: 0.05,
+    backgroundFx: true,   // cursor parting + orchestration edges + gas cloud
     ...opts,
   }
 

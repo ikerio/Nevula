@@ -13,6 +13,7 @@ import {
 } from './states/public-safety'
 import { tickMicroprocessorAnimation, resetMicroprocessor } from './states/microprocessor'
 import { tickTraction } from './states/traction'
+import { createFieldFx, updateFieldFx } from './field-fx'
 
 /** Duration (ms) of each half of the blending crossfade (fade-out + fade-in). */
 const BLEND_FADE_MS = 120
@@ -42,6 +43,7 @@ const DEFAULTS: Required<SlotOptions> = {
   lines: false,
   fogColor: 0xe6e8ef,
   fogDensity: 0,
+  backgroundFx: false,
 }
 
 /** Builds the geometry, material, points (and optional lineSegs) for a slot. */
@@ -55,12 +57,16 @@ export function makeSlot(pixelRatio: number, optsIn: SlotOptions): SlotInternal 
   const count = opts.count
   const fn = STATE_FNS[opts.state]
   const positions = fn(count)
-  const colors = colorize(count, opts.state)
+  const colors = colorize(count, opts.state, positions)
   const sizes = new Float32Array(count)
   for (let i = 0; i < count; i++) sizes[i] = 0.6 + Math.random() * 1.6
 
   const alphas = new Float32Array(count)
   for (let i = 0; i < count; i++) alphas[i] = 1
+
+  // Per-particle random seed — phase/rate for the shader twinkle.
+  const seeds = new Float32Array(count)
+  for (let i = 0; i < count; i++) seeds[i] = Math.random()
 
   const geo = new THREE.BufferGeometry()
   geo.setAttribute('position', new THREE.BufferAttribute(positions, 3))
@@ -69,6 +75,7 @@ export function makeSlot(pixelRatio: number, optsIn: SlotOptions): SlotInternal 
   // Per-particle alpha — surface particles default to 1; logo trails override
   // this each frame to drive fade-in/out cycles along the mesh wireframe.
   geo.setAttribute('aAlpha', new THREE.BufferAttribute(alphas, 1))
+  geo.setAttribute('aSeed', new THREE.BufferAttribute(seeds, 1))
 
   const { material, uniforms } = createParticleMaterial({
     size: opts.size,
@@ -99,7 +106,7 @@ export function makeSlot(pixelRatio: number, optsIn: SlotOptions): SlotInternal 
     scene.add(lineSegs)
   }
 
-  return {
+  const slot: SlotInternal = {
     scene,
     camera,
     points,
@@ -128,6 +135,12 @@ export function makeSlot(pixelRatio: number, optsIn: SlotOptions): SlotInternal 
     baseRotY: 0,
     blendingTransition: null,
   }
+
+  // The interactive background field gets the cursor-FX + gas-cloud layer
+  // (parented to slot.points so it inherits rotation/scale/offset).
+  if (opts.backgroundFx) slot.fx = createFieldFx(slot)
+
+  return slot
 }
 
 /** Schedules a morph toward a new state. The actual lerp happens in updateSlot. */
@@ -145,7 +158,7 @@ export function setSlotState(slot: SlotInternal, state: ParticleState): void {
   const fn = STATE_FNS[state]
   if (!fn) return
   slot.pendingTargets = fn(slot.count)
-  slot.pendingColors = colorize(slot.count, state)
+  slot.pendingColors = colorize(slot.count, state, slot.pendingTargets)
   slot.isMorphing = true
   if (slot.lineSegs) slot.lineSegs.visible = (state === 'constellation' || state === 'traction')
 
@@ -214,6 +227,9 @@ export function updateSlot(slot: SlotInternal, t: number, dt: number = 0): void 
   const col = slot.geo.getAttribute('color').array as Float32Array
   const target = slot.targetPos
   const count = slot.count
+
+  // Drive the shader twinkle clock (all slots).
+  slot.uniforms.uTime.value = t
 
   // Morph toward pending (8% per frame for positions, 4% for colors).
   if (slot.isMorphing && slot.pendingTargets) {
@@ -348,6 +364,11 @@ export function updateSlot(slot: SlotInternal, t: number, dt: number = 0): void 
   slot.offsetY += (slot.offsetYTarget - slot.offsetY) * 0.06
   slot.points.position.x = slot.offsetX
   slot.points.position.y = slot.offsetY
+
+  // Cursor parting + orchestration edges + gas cloud (background slot only).
+  // Runs last so the points transform (rotation/scale/offset) is current for
+  // the world→local cursor projection.
+  if (slot.fx) updateFieldFx(slot, t)
 
   if (slot.lineSegs) {
     slot.lineSegs.rotation.copy(slot.points.rotation)

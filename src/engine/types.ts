@@ -39,6 +39,31 @@ export interface SlotOptions {
   fogColor?: number
   /** FogExp2 density. 0 disables fog. Default 0 (off for preview slots). */
   fogDensity?: number
+  /** Attach the cursor-FX + nebula gas-cloud layer (background slot only). */
+  backgroundFx?: boolean
+}
+
+/** Cursor-parting + orchestration-edges + gas-cloud layer (background only).
+ *  All sub-objects are parented to slot.points and live in its local space. */
+export interface FieldFx {
+  /** Eased per-particle cursor-parting displacement. */
+  dispX: Float32Array
+  dispY: Float32Array
+  /** Orchestration edge layer (custom per-vertex-alpha line shader). */
+  edgeSeg: THREE.LineSegments
+  /** Eased edge-layer visibility (fades in on ambient states). */
+  linkEase: number
+  /** Per-cell color accumulator (sum rgb + count) for the color field. */
+  cfTemp: Float32Array
+  /** Uploaded color-field bytes (rgb + coverage). */
+  colorFieldData: Uint8Array
+  colorTex: THREE.DataTexture
+  /** Procedural fbm gas-cloud plane (nebula only). */
+  cloudMesh: THREE.Mesh
+  /** Eased nebula-state cloud visibility. */
+  gasFade: number
+  /** Cursor position projected into points-local space. */
+  cursorLocal: THREE.Vector3
 }
 
 /** Internal slot record (everything the renderer needs). */
@@ -89,6 +114,9 @@ export interface SlotInternal {
 
   /** Preview-slot DOM element (only set on slots created via NevulaSlot). */
   el?: HTMLElement
+
+  /** Cursor-FX + gas-cloud layer. Set only on the interactive background slot. */
+  fx?: FieldFx
 
   /**
    * Active blending-mode crossfade. Driven by `setSlotState` whenever the new
