@@ -7,7 +7,7 @@ import './styles/scrims.css'
 import gsap from 'gsap'
 import { mountLogoSymbol } from './components/logo-mark'
 import { mountCinematicOverlay } from './components/cinematic-overlay'
-import { mountIntroOverlay, DISSOLVE_DURATION, type IntroOverlay } from './components/intro-overlay'
+import { mountIntroCinematic, type IntroCinematic } from './components/intro-cinematic'
 import { renderNav } from './components/nav'
 import { renderChapterRail } from './components/chapter-rail'
 import { renderScrollHint } from './components/scroll-hint'
@@ -79,8 +79,8 @@ const field = NevulaBackground({
   lines: true,
 })
 field.setOpacity(0)             // hidden during intro
-field.setScaleImmediate(0.3)    // start small so the intro V's exit + the
-                                // particle V's growth read as a single moment
+field.setScaleImmediate(1.15)   // engine V sits at chapter-0 scale, ready to
+                                // crossfade in when the cinematic forms its V
 
 // ----- Chapters + chrome — all mounted up front, hidden via body.intro-active.
 //        Scroll engine starts at boot too; it will tick on scrollY=0 (chapter 0)
@@ -141,33 +141,28 @@ window.addEventListener('keydown', e => {
 
 // ----- Intro overlay -----
 
-const refs: { intro: IntroOverlay | null } = { intro: null }
+const refs: { intro: IntroCinematic | null } = { intro: null }
 
-refs.intro = mountIntroOverlay({
+refs.intro = mountIntroCinematic({
   onExitBegin: () => {
-    // Per user direction: the wordmark must fully dissolve BEFORE the
-    // particle V appears — no overlap. Particle field tween is held for
-    // DISSOLVE_DURATION seconds, then ramps opacity 0→1 over 0.7s in the
-    // wordmark's now-empty spot. Scale stays at chapter 0's natural 1.15
-    // throughout (no growth animation — particles just emerge in place).
+    // The cinematic has just formed the V. Bring the engine's own particle
+    // field (already at logo state, opacity 0) up to full while the cinematic
+    // canvas crossfades out — both are the same V at matching scale/size, so
+    // the mark stays continuous. Chapter 0 + chrome surface at the same time
+    // (the .nv-stage CSS opacity transition handles the 0.9s ramp).
+    // Ramp the engine V up to FULL fast (under the still-full cinematic), so the
+    // cinematic can begin dissolving immediately over a complete, aligned V: the
+    // engine reaches full (~0.2s) before the cinematic fade has dropped much, so
+    // the mark hands off the instant it forms with no density dip.
     field.setScaleImmediate(1.15)
-    gsap.delayedCall(DISSOLVE_DURATION, () => {
-      const tween = { opacity: 0 }
-      gsap.to(tween, {
-        opacity: 1,
-        duration: 0.7,
-        ease: 'power2.out',
-        onUpdate: () => field.setOpacity(tween.opacity),
-      })
+    const tween = { opacity: 0 }
+    gsap.to(tween, {
+      opacity: 1,
+      duration: 0.2,
+      ease: 'power2.out',
+      onUpdate: () => field.setOpacity(tween.opacity),
     })
-
-    // Chapter 0 + chrome (nav, rail, scroll-hint, audio) stay hidden until
-    // the dissolve completes — nothing of the chapter behind the dissolving
-    // wordmark, per user direction. Released right at dissolve completion;
-    // the .nv-stage CSS opacity transition (0.9s) then ramps them in.
-    gsap.delayedCall(DISSOLVE_DURATION, () => {
-      document.body.classList.remove('intro-active')
-    })
+    document.body.classList.remove('intro-active')
   },
   onExitComplete: () => {
     refs.intro?.dispose()
@@ -186,7 +181,7 @@ if (import.meta.hot) {
     chapter1Cards.dispose()
     disposeShared()
     document.querySelectorAll(
-      '.nv-nav, .nv-rail, .nv-scroll-hint, .nv-audio, .nv-cinematic-overlay, .nv-chapter, .nv-scroll-spacer, .intro-overlay, .fd-backdrop',
+      '.nv-nav, .nv-rail, .nv-scroll-hint, .nv-audio, .nv-cinematic-overlay, .nv-chapter, .nv-scroll-spacer, .intro-overlay, .intro-cinematic, .fd-backdrop',
     ).forEach(el => el.remove())
     document.querySelector('#nv-iso')?.closest('svg')?.remove()
     document.body.classList.remove('intro-active', 'fd-open')

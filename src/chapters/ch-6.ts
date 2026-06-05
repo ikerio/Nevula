@@ -3,11 +3,11 @@ import '../styles/chapters/ch-6.css'
 
 export function renderChapter6(): HTMLElement {
   return htmlEl(`
-    <section class="nv-chapter ch-6" data-chapter="10" data-screen-label="10 Closing">
+    <section class="nv-chapter ch-6" data-chapter="5" data-screen-label="05 Closing">
       <div class="layout">
         <div class="closing-text">
           <div class="nv-eyebrow">
-            <span class="num">10</span>
+            <span class="num">05</span>
             <span class="bar"></span>
             <span>One platform &middot; Every industry</span>
           </div>
@@ -45,7 +45,7 @@ export function renderChapter6(): HTMLElement {
             <a href="#" class="nv-btn nv-btn-primary">Request investor brief
               <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
             </a>
-            <a href="#" class="nv-btn nv-btn-ghost">View the platform</a>
+            <a href="${import.meta.env.BASE_URL}platform/station/index.html" target="_blank" rel="noopener" class="nv-btn nv-btn-ghost">View the platform</a>
           </div>
         </div>
       </div>

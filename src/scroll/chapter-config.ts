@@ -19,16 +19,16 @@ export const CHAPTERS: ChapterConfig[] = [
   { key: 'platform',    state: 'city',          scale: 1.05, offset: [0.55,  0.05],               label: 'Platform' },
   { key: 'howitworks',  state: 'constellation', scale: 0.95, offset: [0.55, -0.05],               label: 'How it works' },
   { key: 'plugplay',    state: 'trails',        scale: 0.95, offset: [0.55,  0.00],               label: 'Plug & Play' },
-  { key: 'commandctrs', state: 'building',      scale: 1.00, offset: [-0.55, 0.00],               label: 'Command' },
-  { key: 'marketplace', state: 'home',          scale: 0.95, offset: [0.00, -0.30],               label: 'Marketplace' },
-  { key: 'builtfor',    state: 'device',        scale: 1.05, offset: [-0.55, 0.05],               label: 'Built for' },
-  // Traction uses its own bespoke `traction` particle state — 4 cluster
-  // anchors mapped behind each partner card, faint convergence Beziers
-  // toward a center point, and a horizontal spine that aligns with the
-  // chapter's trajectory rail. Offset [0, 0] keeps it centered behind the
-  // chapter content rather than shifted to one side.
-  { key: 'traction',    state: 'traction',      scale: 1.00, offset: [0.00,  0.00],               label: 'Traction' },
-  { key: 'manifesto',   state: 'nebula',        scale: 1.10, offset: [0.00,  0.00],               label: 'Ecosystem' },
+  // --- Temporarily disabled 2026-06-05 — develop further later. Re-enable each
+  //     here AND its renderer in chapters/index.ts, then restore contiguous
+  //     data-chapter numbers on the sections. (Traction uses its own bespoke
+  //     `traction` particle state: 4 cluster anchors behind the partner cards,
+  //     faint convergence Beziers toward center, and a horizontal spine.) ---
+  // { key: 'commandctrs', state: 'building',      scale: 1.00, offset: [-0.55, 0.00],               label: 'Command' },
+  // { key: 'marketplace', state: 'home',          scale: 0.95, offset: [0.00, -0.30],               label: 'Marketplace' },
+  // { key: 'builtfor',    state: 'device',        scale: 1.05, offset: [-0.55, 0.05],               label: 'Built for' },
+  // { key: 'traction',    state: 'traction',      scale: 1.00, offset: [0.00,  0.00],               label: 'Traction' },
+  // { key: 'manifesto',   state: 'nebula',        scale: 1.10, offset: [0.00,  0.00],               label: 'Ecosystem' },
   { key: 'founders',    state: 'nebula',        scale: 0.85, offset: [0,    -0.20],               label: 'Founders' },
   { key: 'closing',     state: 'logo',          scale: 1.15, offset: [0,     0],     size: 0.030, label: 'Get started' },
 ]

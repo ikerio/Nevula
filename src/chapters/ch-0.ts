@@ -10,16 +10,26 @@ export function renderChapter0(): HTMLElement {
             <span class="pip"></span>
             <span class="num">00</span>
             <span class="bar"></span>
-            <span>Nevula &middot; Orchestration platform</span>
+            <span>Nevula &middot; SafeTech orchestration</span>
           </div>
-          <h1 class="nv-title size-xl">
-            Security<br/><em>simplified.</em>
+          <h1 class="nv-title size-l">
+            The <em>orchestration layer</em><br/>
+            for modern security &amp;<br/>
+            monitoring services.
           </h1>
-          <p class="nv-lede">
-            The orchestration platform for launching modern security solutions
-            &mdash; empowering integrators, security firms, and solution developers
-            to ship SaaS-grade services in weeks, not months.
+          <p class="nv-lede-lead">
+            Nevula redefines how security and monitoring solutions are
+            built, delivered, and scaled.
           </p>
+          <p class="nv-lede">
+            Empowering integrators, service providers, and security firms to
+            launch modern security services in weeks, not months.
+          </p>
+          <ul class="hero-chips" aria-label="Platform highlights">
+            <li class="hero-chip"><span class="dot"></span>Cloud-native</li>
+            <li class="hero-chip"><span class="dot"></span>AI-powered</li>
+            <li class="hero-chip"><span class="dot"></span>Zero IT CapEx</li>
+          </ul>
         </div>
       </div>
     </section>

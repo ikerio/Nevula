@@ -1,0 +1,116 @@
+/* =========================================================================
+   NEVULA — Intro cinematic overlay (particle opening)
+   A full-bleed transparent WebGL canvas that plays the nebula → "nevula"
+   wordmark → detonation → V reform sequence, then crossfades its V into the
+   engine's own particle field (chapter 0). Sits above the particle stage at
+   the same z-index the old wordmark overlay used. Only the intro lives here —
+   chapter content + chrome stay gated by `body.intro-active` exactly as before.
+   ========================================================================= */
+
+.intro-cinematic {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;          /* input is captured on window; canvas is passive */
+  opacity: 1;
+  /* The exit fade is GSAP-driven in intro-cinematic.ts (sequenced AFTER the
+     engine V is fully up), so there's no CSS opacity transition here — it would
+     fight the per-frame tween. */
+}
+
+.intro-cinematic canvas {
+  position: absolute;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  display: block;
+}
+
+/* Exposure-flash overlay — a brief white lift on the detonation. */
+.intro-cinematic .intro-cine-flash {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* "Scroll to begin" — same language/cadence as the previous intro hint so
+   the brand voice is unchanged; only the visuals behind it are new. */
+.intro-cinematic .intro-cine-hint {
+  position: absolute;
+  bottom: clamp(28px, 6vh, 64px);
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--ink-400);
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  transition: opacity 0.9s ease-out;
+}
+.intro-cinematic.show-hint .intro-cine-hint {
+  opacity: 1;
+}
+.intro-cinematic.is-starting .intro-cine-hint {
+  opacity: 0;
+  transition-duration: 0.4s;
+}
+.intro-cinematic .intro-cine-hint .line {
+  width: 1px;
+  height: 28px;
+  background: linear-gradient(180deg, var(--ink-400), transparent);
+  animation: intro-cine-hint-drop 2.6s ease-in-out infinite;
+}
+@keyframes intro-cine-hint-drop {
+  0%   { transform: scaleY(0.2); transform-origin: top; }
+  60%  { transform: scaleY(1);   transform-origin: top; }
+  61%  { transform-origin: bottom; }
+  100% { transform: scaleY(0);   transform-origin: bottom; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro-cinematic .intro-cine-hint .line {
+    animation: none;
+  }
+}
+
+/* ----- Stage + chrome reveal (relocated from the old wordmark overlay's CSS
+   so the intro stays self-contained now that intro-overlay.css is no longer
+   loaded). While `intro-active` is set, chapter content + chrome are hidden;
+   when main.ts lifts the class at the V handoff, they fade up over ~0.9s
+   underneath the crossfading cinematic canvas. The hide rules mirror the inline
+   FOUC guard in index.html; the transitions are what live only here. ----- */
+body.intro-active .nv-cinematic-overlay { opacity: 0; }
+body.intro-active .nv-nav,
+body.intro-active .nv-rail,
+body.intro-active .nv-audio,
+body.intro-active .nv-scroll-hint {
+  opacity: 0;
+  pointer-events: none;
+}
+body.intro-active .nv-stage {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.nv-stage,
+.nv-rail,
+.nv-audio,
+.nv-scroll-hint,
+.nv-cinematic-overlay {
+  transition: opacity 0.9s ease-out, visibility 0s linear 0s;
+}
+.nv-nav {
+  transition: opacity 0.9s ease-out;
+}
+/* Symmetric delay so visibility flips back the instant intro-active lifts. */
+body.intro-active .nv-stage {
+  transition: opacity 0.9s ease-out, visibility 0s linear 0.9s;
+}

@@ -79,7 +79,7 @@ function buildDossier(f: Founder): HTMLElement {
           <header class="fd-header">
             <span class="fd-index">${f.index}</span>
             <span class="fd-sep" aria-hidden="true"></span>
-            <span class="fd-role">Founder &middot; ${f.role}</span>
+            <span class="fd-role">${f.kind} &middot; ${f.role}</span>
           </header>
 
           <h2 class="fd-name" id="fd-name">${f.name}</h2>

@@ -22,6 +22,16 @@
   text-align: left;
   max-width: 460px;
 }
+/* Lead lede (the platform-model thesis) — left-aligned to the column, sitting
+   above the standard .nv-lede. Shares the global .nv-lede-lead type. */
+.ch-2 .ch2-head .nv-lede-lead {
+  text-align: left;
+  margin: 22px 0 0;
+  max-width: 480px;
+}
+.ch-2 .ch2-head .nv-lede-lead + .nv-lede {
+  margin-top: 12px;
+}
 
 /* Stat strip — 6 process tiles along the bottom edge */
 .ch-2 .ch2-strip {
@@ -92,9 +102,14 @@
     line-height: 1.02;
   }
   .ch-2 .ch2-head .nv-lede {
-    margin-top: 18px;
+    margin-top: 12px;
     font-size: clamp(13px, 1.0vw, 16px);
     max-width: 420px;
+  }
+  .ch-2 .ch2-head .nv-lede-lead {
+    margin-top: 14px;
+    font-size: clamp(15px, 1.2vw, 19px);
+    max-width: 440px;
   }
   .ch-2 .ch2-strip {
     bottom: 32px;

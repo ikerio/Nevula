@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ch-3 preview harness</title>
+    <style>
+      html, body { margin: 0; height: 100%; background: #e6e8ef; overflow: hidden; }
+      #ch3-root { position: fixed; inset: 0; }
+    </style>
+  </head>
+  <body>
+    <!-- Dev-only isolated harness for chapter 3 (Plug & Play console).
+         Mounts just the chapter with --i:1 and fires the chapter-enter event
+         so the loop runs without the intro/scroll engine. Not a build entry. -->
+    <div id="ch3-root"></div>
+    <script type="module" src="/src/ch3-preview.ts"></script>
+  </body>
+</html>

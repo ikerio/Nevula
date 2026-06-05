@@ -48,12 +48,21 @@ export function renderChapter1(): HTMLElement {
           <h2 class="nv-title size-l">
             Digital infrastructure<br/><em>for SafeTech.</em>
           </h2>
-          <p class="nv-lede">
-            A SaaS / IoTaaS platform powering solutions across smart cities,
-            public safety, logistics, home security, healthcare, and pet care &mdash;
-            through AI, LPWAN connectivity, and an open API ecosystem.
-            Scalable, interoperable, cost-effective.
+          <p class="nv-lede-lead">
+            Nevula is a digital infrastructure provider (SaaS / IoTaaS) that
+            transforms how integrators, developers, and service providers
+            deliver SafeTech services.
           </p>
+          <p class="nv-lede">
+            Our platform powers solutions in smart cities, public safety,
+            logistics, home security, healthcare, and pet care &mdash; among other
+            industries &mdash; using AI, LPWAN connectivity, and an open API ecosystem.
+          </p>
+          <ul class="hero-chips" aria-label="Platform qualities">
+            <li class="hero-chip"><span class="dot"></span>Scalable</li>
+            <li class="hero-chip"><span class="dot"></span>Interoperable</li>
+            <li class="hero-chip"><span class="dot"></span>Cost-effective</li>
+          </ul>
         </div>
 
         <!-- Expanded panel — Public Safety. Hidden by default; revealed BELOW

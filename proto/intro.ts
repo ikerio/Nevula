@@ -68,8 +68,8 @@ const params = {
   flashStrength: 0.5,      // exposure-flash peak (white overlay opacity)
   igniteDist: 0.2,         // neighbor distance for the formation connections
   igniteDuration: 0.85,    // how long the connection web lingers
-  camPushIn: 0.5,          // camera dolly-in at full compression
-  shakeStrength: 0.09,     // explosion camera recoil shake
+  camPushIn: 1,            // camera dolly-in at full compression
+  shakeStrength: 0.21,     // explosion camera recoil shake
 }
 
 // =============================================================================

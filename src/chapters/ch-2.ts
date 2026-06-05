@@ -12,12 +12,15 @@ export function renderChapter2(): HTMLElement {
             <span>How Nevula Works</span>
           </div>
           <h2 class="nv-title size-l">
-            From sensor signal,<br/><em>to actionable decision.</em>
+            One platform,<br/><em>every brand on top.</em>
           </h2>
+          <p class="nv-lede-lead">
+            Nevula is a single multi-tenant SaaS / IoTaaS platform &mdash; one
+            backbone powering every integrator, developer, and service provider.
+          </p>
           <p class="nv-lede">
-            Six layers, one platform. The intelligent stack that powers every
-            Nevula deployment &mdash; from raw IoT signal at the edge, all the way to
-            predictive action in the cloud.
+            The same platform supports every channel and vertical, and partners
+            white-label it to launch their own branded solutions.
           </p>
         </div>
       </div>

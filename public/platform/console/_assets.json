@@ -1,0 +1,104 @@
+[
+  {
+    "name": "a0.svg",
+    "ext": "svg",
+    "mime": "image/svg+xml",
+    "bytes": 3171
+  },
+  {
+    "name": "a1.js",
+    "ext": "js",
+    "mime": "application/javascript",
+    "bytes": 4112
+  },
+  {
+    "name": "a2.js",
+    "ext": "js",
+    "mime": "application/javascript",
+    "bytes": 5774
+  },
+  {
+    "name": "a3.js",
+    "ext": "js",
+    "mime": "application/javascript",
+    "bytes": 39580
+  },
+  {
+    "name": "a4.js",
+    "ext": "js",
+    "mime": "application/javascript",
+    "bytes": 2239
+  },
+  {
+    "name": "a5.woff2",
+    "ext": "woff2",
+    "mime": "font/woff2",
+    "bytes": 1640
+  },
+  {
+    "name": "a6.woff2",
+    "ext": "woff2",
+    "mime": "font/woff2",
+    "bytes": 8872
+  },
+  {
+    "name": "a7.woff2",
+    "ext": "woff2",
+    "mime": "font/woff2",
+    "bytes": 6836
+  },
+  {
+    "name": "a8.woff2",
+    "ext": "woff2",
+    "mime": "font/woff2",
+    "bytes": 5888
+  },
+  {
+    "name": "a9.woff2",
+    "ext": "woff2",
+    "mime": "font/woff2",
+    "bytes": 11624
+  },
+  {
+    "name": "a10.woff2",
+    "ext": "woff2",
+    "mime": "font/woff2",
+    "bytes": 31432
+  },
+  {
+    "name": "a11.woff2",
+    "ext": "woff2",
+    "mime": "font/woff2",
+    "bytes": 2552
+  },
+  {
+    "name": "a12.woff2",
+    "ext": "woff2",
+    "mime": "font/woff2",
+    "bytes": 14500
+  },
+  {
+    "name": "a13.woff2",
+    "ext": "woff2",
+    "mime": "font/woff2",
+    "bytes": 9444
+  },
+  {
+    "name": "a14.woff2",
+    "ext": "woff2",
+    "mime": "font/woff2",
+    "bytes": 8520
+  },
+  {
+    "name": "a15.woff2",
+    "ext": "woff2",
+    "mime": "font/woff2",
+    "bytes": 15120
+  },
+  {
+    "name": "a16.woff2",
+    "ext": "woff2",
+    "mime": "font/woff2",
+    "bytes": 24836
+  }
+]

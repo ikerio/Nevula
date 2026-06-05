@@ -3,7 +3,7 @@ import { openFounderDossier, initFounderDossier, type FounderDossierHandle } fro
 import '../styles/chapters/ch-5.css'
 
 /**
- * Chapter 5 — Founders (rail label "08 Founders").
+ * Chapter 5 — Founders (rail label "04 Founders").
  *
  * Adapts the standalone study at `NevulaWebsiteDesign/Founder Card
  * _standalone_.html`. Three discrete states per card:
@@ -34,10 +34,12 @@ export interface TrackEntry {
 }
 
 export interface Founder {
-  /** Two-digit index, "01"..."04". */
+  /** Two-digit index, "01"..."05". */
   index: string
   /** Short role label, ALL-CAPS in the top-right pill. */
   role: string
+  /** Founder vs co-founder — prefixes the role in the pill + dossier header. */
+  kind: 'Founder' | 'Co-founder'
   name: string
   /** One-line credential under the name. */
   tagline: string
@@ -56,151 +58,173 @@ export interface Founder {
   portrait: string
 }
 
-// Real Nevula founders from the May 2026 investor pitch (PDF p.15). Jorge
-// is the technical founder (XPECTRA, 1995); German leads as CEO. Bios use
-// only PDF-confirmed facts; soft fields carry TBD-NOTE markers for later
-// refinement. See NevulaResources/INVESTOR_REWRITE_PLAN.md for the full
-// rationale and source quotes.
+// Nevula founders — refreshed 2026-06 from the team slide the user provided
+// (5 cards incl. Jenny Pinto, CFO). Jorge is the sole technical founder; the
+// rest are co-founders. Bios + track records are synthesized from the slide's
+// bullet credentials.
 export const FOUNDERS: Founder[] = [
   {
     index: '01',
     role: 'CEO',
+    kind: 'Co-founder',
     name: 'German Perez-Duarte',
-    tagline: 'Continental operator. Scaling LatAm businesses at hyperscale.',
-    pastCompanies: ['Amazon', 'Uber Eats', 'Microsoft', 'Nielsen'],
+    tagline: '25 years scaling $1B+ tech businesses across LatAm.',
+    pastCompanies: ['Amazon', 'Uber', 'Microsoft', 'Nielsen'],
     bio:
-      'German has led country-scale operations across Latin America — as Country Manager for Amazon Mexico and Head of LatAm for Uber Eats, with earlier leadership at Microsoft and Nielsen. At Nevula he owns strategy, growth, and the path to enterprise.',
+      'German has spent 25 years scaling $1B+ technology businesses across Latin America — as Country Manager for Amazon Mexico and Head of LatAm for Uber, with earlier leadership at Microsoft and Nielsen. A Wharton MBA (1996) with MIT executive programs in AI, Digital Transformation and Agentic AI (2024, 2026), and an MIT Fire Hydrant Award honoree (2024). At Nevula he owns strategy, growth, and the path to enterprise.',
     trackRecord: [
       {
-        company: 'Amazon',
-        range: 'Recent', // TBD-NOTE: confirm Amazon Mexico tenure years
+        company: 'Amazon Mexico',
+        range: 'Country Manager',
         description:
-          'Country Manager, Amazon Mexico. Led the country business across marketplace, logistics, and commercial operations.',
+          'Led the Amazon Mexico country business across marketplace, logistics, and commercial operations.',
       },
       {
-        company: 'Uber Eats',
-        range: 'Earlier', // TBD-NOTE: confirm Uber Eats date range
+        company: 'Uber · Microsoft · Nielsen',
+        range: 'LatAm leadership',
         description:
-          'Head of LatAm. Scaled the regional business across multiple country markets.',
+          'Head of LatAm at Uber, with earlier regional leadership at Microsoft and Nielsen.',
       },
       {
-        company: 'Microsoft · Nielsen',
-        range: 'Earlier career',
+        company: 'Wharton · MIT',
+        range: '1996 · 2024–26',
         description:
-          'Leadership roles spanning commercial expansion and consumer insight across the region.',
+          'Wharton MBA (1996); MIT executive programs in AI, Digital Transformation & Agentic AI (2024, 2026); MIT Fire Hydrant Award (2024).',
       },
     ],
     stats: [
+      { value: '25 yrs', label: 'Scaling $1B+' },
       { value: 'Amazon MX', label: 'Country lead' },
-      { value: 'LatAm', label: 'Uber Eats head' },
-      { value: '20+ yrs', label: 'Operating' }, // TBD-NOTE: tighten years
+      { value: 'Uber', label: 'Head of LatAm' },
     ],
     portrait: `${import.meta.env.BASE_URL}assets/founders/german.png`,
   },
   {
     index: '02',
     role: 'CTO',
+    kind: 'Founder',
     name: 'Jorge Cesin',
-    tagline: '30 years building security infrastructure across LatAm.',
-    pastCompanies: ['XPECTRA', 'netMATRIX'],
+    tagline: '30 years in security & IoT. Founder of Xpectra.',
+    pastCompanies: ['Xpectra', 'SKU', 'MIT'],
     bio:
-      'Jorge founded XPECTRA in 1995 and spent three decades building one of the largest security and IoT operations in Latin America — deploying over five million sensors and shipping more than $35M in contracts. At Nevula he owns the platform: ingestion, orchestration, and the device fabric.',
+      'Jorge has 30 years in security and IoT. He founded Xpectra, a leading banking-monitoring platform, and SKU, a technology logistics venture. An MIT AI / Digital Transformation alumnus and MIT Fire Hydrant Award honoree (2024). At Nevula he owns the platform end-to-end — ingestion, orchestration, and the device fabric.',
     trackRecord: [
       {
-        company: 'XPECTRA',
-        range: '1995 — 2024',
-        description:
-          'Founder. Built and scaled XPECTRA to 5M+ sensors deployed and $35M+ in contracts across LatAm.',
+        company: 'Xpectra',
+        range: 'Founder',
+        description: 'Founder of Xpectra, a leading banking-monitoring platform.',
       },
       {
-        company: 'netMATRIX',
-        range: '2024 — 2025',
-        description:
-          'Led the ideation and engineering effort that turned netMATRIX into the foundation of Nevula.',
+        company: 'SKU',
+        range: 'Founder',
+        description: 'Founder of SKU, a technology logistics venture.',
       },
       {
-        company: 'Nevula Tech Inc.',
-        range: '2025 — present',
-        description:
-          'CTO & Founder. Owns the orchestration platform end-to-end — workflow engine, AI, and device fabric.',
+        company: 'MIT',
+        range: '2024',
+        description: 'MIT AI / Digital Transformation; MIT Fire Hydrant Award (2024).',
       },
     ],
     stats: [
-      { value: '5M+', label: 'Sensors deployed' },
       { value: '30 yrs', label: 'Security & IoT' },
-      { value: '$35M+', label: 'Contracts shipped' },
+      { value: 'Xpectra', label: 'Founder' },
+      { value: 'SKU', label: 'Founder' },
     ],
     portrait: `${import.meta.env.BASE_URL}assets/founders/jorge.png`,
   },
   {
     index: '03',
-    role: 'CDO',
+    role: 'CDAO',
+    kind: 'Co-founder',
     name: 'Carlos Urgelles',
-    tagline: 'Built and exited Pabis Retail to Accel-KKR.',
-    pastCompanies: ['Pabis Retail', 'Accel-KKR'],
+    tagline: 'Data & analytics leader. Founder & CEO of Pabis Retail.',
+    pastCompanies: ['Pabis Retail', 'Teamcore', 'Accel-KKR'],
     bio:
-      'Carlos founded and led Pabis Retail as CEO through its acquisition by Accel-KKR in 2023. He has spent his career building and operating technology businesses across the region. At Nevula he owns commercial strategy — partnerships, GTM, and the integrator channel.',
+      'Carlos is a data analytics and platforms expert. He founded and led Pabis Retail as CEO; the startup was acquired by Teamcore — backed by Accel-KKR — in 2023. At Nevula he owns data, analytics, and the intelligence layer.',
     trackRecord: [
       {
         company: 'Pabis Retail',
-        range: 'Founded — 2023', // TBD-NOTE: confirm founding year
-        description:
-          'Founder & CEO. Built the company end-to-end through its acquisition by Accel-KKR in 2023.',
+        range: 'Founder & CEO',
+        description: 'Founder and CEO of Pabis Retail.',
       },
       {
-        company: 'Accel-KKR',
-        range: '2023 — present',
-        description:
-          'Continued leadership post-acquisition at the Accel-KKR portfolio.', // TBD-NOTE: clarify post-acquisition scope
+        company: 'Teamcore',
+        range: '2023',
+        description: 'Pabis Retail acquired by Teamcore (backed by Accel-KKR) in 2023.',
       },
       {
-        company: 'Earlier ventures',
-        range: 'Earlier career',
-        description:
-          'Operating and founding roles in technology and retail across LatAm.', // TBD-NOTE: name specific prior companies if approved
+        company: 'Data & Analytics',
+        range: 'Expertise',
+        description: 'Data analytics and platforms expert across LatAm.',
       },
     ],
     stats: [
-      { value: '1', label: 'Exit (Accel-KKR)' },
-      { value: 'Founder', label: 'Pabis Retail' },
-      { value: 'LatAm', label: 'Operator' }, // TBD-NOTE: replace w/ concrete number
+      { value: 'Pabis', label: 'Founder & CEO' },
+      { value: '2023', label: 'Acquired · Teamcore' },
+      { value: 'Accel-KKR', label: 'Backed' },
     ],
     portrait: `${import.meta.env.BASE_URL}assets/founders/carlos.png`,
   },
   {
     index: '04',
     role: 'CMO',
+    kind: 'Co-founder',
     name: 'Hector Ruvalcaba',
-    tagline: 'Brand strategist. Mexico Entrepreneur of the Year.',
-    pastCompanies: ['Mexico EOY', 'MIT Fire Hydrant'],
+    tagline: 'PR & marketing strategist. Founder of The bbit group.',
+    pastCompanies: ['The bbit group', 'Jalisco EOY', 'MIT'],
     bio:
-      'Hector is a PR and marketing strategist recognized as Mexico Entrepreneur of the Year and an MIT Fire Hydrant Award honoree. At Nevula he owns brand, marketing, and category positioning.',
+      'Hector is a PR and marketing strategist and founder of The bbit group. Winner of the Jalisco Entrepreneur award (2024) and an MIT Fire Hydrant Award honoree (2024). At Nevula he owns brand, marketing, and category positioning.',
     trackRecord: [
       {
-        company: 'Mexico Entrepreneur of the Year',
-        range: 'National award',
-        description:
-          'Recognized for entrepreneurial leadership in Mexico.', // TBD-NOTE: confirm award year + governing body
+        company: 'The bbit group',
+        range: 'Founder',
+        description: 'Founder of The bbit group — PR and marketing.',
       },
       {
-        company: 'MIT Fire Hydrant Award',
-        range: 'Recognition',
-        description:
-          'MIT honoree for contribution to industry innovation.', // TBD-NOTE: confirm award context + year
+        company: 'Jalisco Entrepreneur',
+        range: '2024',
+        description: 'Winner of the Jalisco Entrepreneur award (2024).',
       },
       {
-        company: 'Earlier career',
-        range: 'PR · Marketing',
-        description:
-          'Senior brand and communications leadership across consumer and enterprise categories.', // TBD-NOTE: list specific agency or brand engagements
+        company: 'MIT Fire Hydrant',
+        range: '2024',
+        description: 'MIT Fire Hydrant Award honoree (2024).',
       },
     ],
     stats: [
-      { value: 'EOY', label: 'Mexico' },
+      { value: 'The bbit', label: 'Founder' },
+      { value: 'Jalisco', label: 'Entrepreneur 2024' },
       { value: 'MIT', label: 'Fire Hydrant' },
-      { value: 'Brand', label: 'Strategist' }, // TBD-NOTE: replace w/ concrete number
     ],
     portrait: `${import.meta.env.BASE_URL}assets/founders/hector.png`,
+  },
+  {
+    index: '05',
+    role: 'CFO',
+    kind: 'Co-founder',
+    name: 'Jenny Pinto',
+    tagline: '25 years of financial expertise. CFO of Xpectra.',
+    pastCompanies: ['Xpectra', 'Finance'],
+    bio:
+      'Jenny brings 25 years of financial expertise and serves as CFO of Xpectra. At Nevula she owns finance — capital allocation, planning, and operations.',
+    trackRecord: [
+      {
+        company: 'Xpectra',
+        range: 'CFO',
+        description: 'Chief Financial Officer of Xpectra.',
+      },
+      {
+        company: 'Finance',
+        range: '25 yrs',
+        description: '25 years of financial leadership and operations.',
+      },
+    ],
+    stats: [
+      { value: '25 yrs', label: 'Financial expertise' },
+      { value: 'Xpectra', label: 'CFO' },
+      { value: 'Finance', label: 'Capital & ops' },
+    ],
+    portrait: `${import.meta.env.BASE_URL}assets/founders/Jenny.png`,
   },
 ]
 
@@ -227,7 +251,7 @@ function renderCard(f: Founder, i: number): string {
           </div>
           <span class="sweep"></span>
           <span class="pix">${f.index}</span>
-          <span class="prole">Founder &middot; ${f.role}</span>
+          <span class="prole">${f.kind} &middot; ${f.role}</span>
           <div class="pcap">
             <span class="pcap-left">
               <span class="dot"></span>Nevula &middot; Dossier
@@ -262,11 +286,11 @@ function renderCard(f: Founder, i: number): string {
 
 export function renderChapter5(): HTMLElement {
   const root = htmlEl(`
-    <section class="nv-chapter ch-5" data-chapter="9" data-screen-label="09 Founders">
+    <section class="nv-chapter ch-5" data-chapter="4" data-screen-label="04 Founders">
       <div class="layout">
         <div class="ch5-head">
           <div class="nv-eyebrow">
-            <span class="num">09</span>
+            <span class="num">04</span>
             <span class="bar"></span>
             <span>The Team</span>
           </div>
@@ -275,7 +299,7 @@ export function renderChapter5(): HTMLElement {
           </h2>
           <p class="nv-lede">
             Our founders have led global operations at Amazon, Microsoft, and
-            Uber Eats &mdash; each surpassing $1B in annual revenue under their
+            Uber &mdash; each surpassing $1B in annual revenue under their
             leadership &mdash; and shaped startup ecosystems across Latin America.
           </p>
         </div>

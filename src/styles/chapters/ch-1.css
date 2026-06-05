@@ -65,10 +65,37 @@
   overflow: hidden;
   transition: opacity 240ms var(--ease-out), max-height 320ms var(--ease-out), margin 320ms var(--ease-out);
 }
+/* Lead lede (the "transforms how..." vision line) — left-aligned to the column.
+   Collapsible like .nv-lede so the expanded-card state can hide it; the panel
+   position math below depends on the expanded head staying compact. */
+.ch-1 .ch1-head .nv-lede-lead {
+  text-align: left;
+  margin: 22px 0 0;
+  max-width: 480px;
+  opacity: 1;
+  max-height: 220px;
+  overflow: hidden;
+  transition: opacity 240ms var(--ease-out), max-height 320ms var(--ease-out), margin 320ms var(--ease-out);
+}
+.ch-1 .ch1-head .nv-lede-lead + .nv-lede {
+  margin-top: 12px;
+}
+/* Qualities chip row — left-aligned, rides the head's --i entry transform
+   (no transform of its own), collapsible in the expanded state. */
+.ch-1 .ch1-head .hero-chips {
+  justify-content: flex-start;
+  margin-top: 18px;
+  opacity: 1;
+  max-height: 60px;
+  overflow: hidden;
+  transition: opacity 240ms var(--ease-out), max-height 320ms var(--ease-out), margin 320ms var(--ease-out);
+}
 /* When the chapter is expanded, fade out the lede + shrink the title slightly
    so the expanded panel has room beneath without overlapping. Eyebrow stays
    visible the whole time. */
-.ch-1.is-expanded .ch1-head .nv-lede {
+.ch-1.is-expanded .ch1-head .nv-lede,
+.ch-1.is-expanded .ch1-head .nv-lede-lead,
+.ch-1.is-expanded .ch1-head .hero-chips {
   opacity: 0;
   max-height: 0;
   margin-top: 0;
@@ -443,5 +470,14 @@
   }
   .ch-1 .up-stats {
     grid-template-columns: 1fr 1fr;
+  }
+  /* On mobile the collapsible head text isn't driven by the (desktop-only)
+     card-expansion, so lift the max-height clamps that could crop longer copy
+     when it wraps in the narrow column. */
+  .ch-1 .ch1-head .nv-lede,
+  .ch-1 .ch1-head .nv-lede-lead,
+  .ch-1 .ch1-head .hero-chips {
+    max-height: none;
+    overflow: visible;
   }
 }

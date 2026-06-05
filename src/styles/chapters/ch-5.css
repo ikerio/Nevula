@@ -37,10 +37,10 @@
      implicit min-content rises to the widest nowrap child (e.g. German's
      4-company `.past` row), and that single card inflates its whole column.
      Result was uneven card widths across the row. */
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 16px;
   width: 100%;
-  max-width: 1280px;
+  max-width: 1360px;
 }
 
 /* ------------------------------------------------------------------
@@ -453,7 +453,7 @@
     font-size: clamp(13px, 1.0vw, 16px);
     max-width: 520px;
   }
-  .ch-5 .founder-grid { gap: 14px; max-width: 1120px; }
+  .ch-5 .founder-grid { gap: 12px; max-width: 1280px; }
   .ch-5 .fc { aspect-ratio: 7 / 11; }
   .ch-5 .fc .meta { padding: 12px 14px 14px; }
   .ch-5 .fc .name { font-size: 17px; }
@@ -467,8 +467,8 @@
    ------------------------------------------------------------------ */
 @media (max-width: 1080px) {
   .ch-5 .founder-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    max-width: 720px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    max-width: 880px;
   }
 }
 

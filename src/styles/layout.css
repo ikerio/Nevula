@@ -399,6 +399,62 @@ body {
   text-wrap: balance;
 }
 
+/* --- Lead lede: a prominent first sentence above the standard .nv-lede,
+   carrying the "vision" line. Used in ch-0 and ch-1. Alignment + collapse
+   behaviour are set per chapter; this is just the base type treatment. --- */
+.nv-lede-lead {
+  font-family: var(--font-display);
+  font-size: clamp(18px, 1.6vw, 24px);
+  line-height: 1.45;
+  color: var(--ink-200);
+  max-width: 640px;
+  margin: 22px auto 0;
+  text-wrap: balance;
+}
+.nv-lede-lead + .nv-lede {
+  margin-top: 10px;
+}
+
+/* --- Highlight chips: a scannable pill row for short qualifier claims
+   (e.g. Cloud-native · AI-powered · Zero IT CapEx). Reuses the system pill
+   vocabulary shared with .up-badge + .nv-eyebrow. Row alignment + any entry
+   transform are set per chapter; .hero-chip is the shared pill itself. --- */
+.hero-chips {
+  list-style: none;
+  margin: 30px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.hero-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 15px 7px 12px;
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-pill);
+  background: rgba(255, 255, 255, 0.82);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-300);
+  white-space: nowrap;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 1px 2px rgba(10, 15, 31, 0.04);
+}
+.hero-chip .dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--orange-500);
+  box-shadow: 0 0 8px var(--orange-500);
+}
+
 /* Vertical orbit cards (used in IoT + SaaS chapters) */
 .nv-orbit {
   position: absolute;
