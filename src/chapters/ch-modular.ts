@@ -123,24 +123,6 @@ export function renderChapterModular(): HTMLElement {
             drag each signal into different screens for clearer visualization,
             faster triage and immediate response.
           </p>
-
-          <div class="mc-stats">
-            <div class="mc-stat">
-              <span class="lbl">01 &middot; Integrated</span>
-              <span class="v">50+<span class="u">device types</span></span>
-              <span class="ds">Fire &middot; panic &middot; access &middot; health &middot; mobility &middot; more.</span>
-            </div>
-            <div class="mc-stat">
-              <span class="lbl">02 &middot; Flexible</span>
-              <span class="v">&infin;<span class="u">layouts</span></span>
-              <span class="ds">Drag any signal onto any screen.</span>
-            </div>
-            <div class="mc-stat">
-              <span class="lbl">03 &middot; Fast</span>
-              <span class="v">&lt;5s<span class="u">to respond</span></span>
-              <span class="ds">Reconfigure the view and act immediately.</span>
-            </div>
-          </div>
         </div>
 
         <div class="mc-stage" id="mcStage">

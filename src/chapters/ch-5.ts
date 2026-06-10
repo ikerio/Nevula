@@ -250,7 +250,6 @@ function renderCard(f: Founder, i: number): string {
             <span class="pmissing-label">Portrait pending</span>
           </div>
           <span class="sweep"></span>
-          <span class="pix">${f.index}</span>
           <span class="prole">${f.kind} &middot; ${f.role}</span>
           <div class="pcap">
             <span class="pcap-left">

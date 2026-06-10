@@ -41,28 +41,11 @@ export function renderChapter3(): HTMLElement {
             No separate vendor consoles.
           </p>
 
-          <div class="pp-stats">
-            <div class="pp-stat">
-              <span class="lbl">01 &middot; Families</span>
-              <span class="v">12+<span class="u">supported</span></span>
-              <span class="ds">Fire &middot; panic &middot; access &middot; health &middot; mobility &middot; more.</span>
-            </div>
-            <div class="pp-stat">
-              <span class="lbl">02 &middot; Setup</span>
-              <span class="v">0<span class="u">SDKs</span></span>
-              <span class="ds">Widgets self-configure when a family is linked.</span>
-            </div>
-            <div class="pp-stat">
-              <span class="lbl">03 &middot; Glass</span>
-              <span class="v">1<span class="u">console</span></span>
-              <span class="ds">Cross-vendor, cross-protocol, one operator view.</span>
-            </div>
-          </div>
-
           <div class="pp-cta">
             <a href="${import.meta.env.BASE_URL}platform/station/index.html" target="_blank" rel="noopener" data-demo-link class="nv-btn nv-btn-primary">Explore the demo
               <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
             </a>
+            <a href="${import.meta.env.BASE_URL}platform/onboarding/index.html" target="_blank" rel="noopener" data-demo-link class="nv-btn nv-btn-ghost">View onboarding</a>
           </div>
         </div>
 

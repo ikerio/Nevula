@@ -76,8 +76,14 @@ function accept(): void {
   close()
   if (!href) return
   // Triggered by the Accept click (a user gesture), so this isn't popup-blocked.
-  const win = window.open(href, '_blank', 'noopener')
-  if (!win) window.location.href = href // fallback if a blocker still intervened
+  // NOTE: passing 'noopener' in the features string makes window.open() return
+  // null in Chromium/Firefox even when the tab opened fine — which used to trip
+  // the `!win` fallback below and navigate THIS tab to the demo as well. So open
+  // WITHOUT that feature (giving a real handle to detect genuine blocking) and
+  // sever the back-reference manually for the same security benefit.
+  const win = window.open(href, '_blank')
+  if (win) win.opener = null
+  else window.location.href = href // genuine popup-block fallback only
 }
 
 export function initDemoDisclaimer(): DemoDisclaimerHandle {

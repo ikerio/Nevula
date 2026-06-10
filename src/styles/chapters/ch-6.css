@@ -57,6 +57,56 @@
 .ch-6 .nv-stat-strip .cell .v .u { font-size: 11px; }
 .ch-6 .nv-ctas { margin-top: 36px; }
 
+/* Contact block — closes the section with the company's email + office.
+   Two stacked label/value pairs, centered as a row beneath the CTAs. */
+.ch-6 .closing-contact {
+  margin-top: 44px;
+  padding-top: 32px;
+  border-top: 1px solid var(--line-soft);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 22px 56px;
+}
+.ch-6 .cc-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 9px;
+  text-align: left;
+  max-width: 420px;
+}
+.ch-6 .cc-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-400);
+}
+.ch-6 .cc-label .dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--orange-500);
+  box-shadow: 0 0 8px var(--orange-500);
+}
+.ch-6 .cc-value {
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--ink-200);
+  font-style: normal; /* reset the <address> italic */
+  text-decoration: none;
+}
+.ch-6 a.cc-value {
+  color: var(--ink-100);
+  transition: color 0.2s var(--ease-out);
+}
+.ch-6 a.cc-value:hover { color: var(--orange-500); }
+
 /* Mobile — layout back in flow + centered like the opening; the 4-cell stat
    strip becomes 2×2 (it's more specific than the shared 1-col rule in
    layout.css, so it has to be re-stated here). */
@@ -77,5 +127,15 @@
   .ch-6 .nv-stat-strip {
     grid-template-columns: 1fr 1fr;
     margin-top: 28px;
+  }
+  .ch-6 .closing-contact {
+    margin-top: 32px;
+    padding-top: 24px;
+    gap: 20px;
+  }
+  .ch-6 .cc-item {
+    align-items: center;
+    text-align: center;
+    max-width: none;
   }
 }

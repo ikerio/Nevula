@@ -368,6 +368,11 @@ export function mountIntroCinematic(opts: IntroCinematicOptions): IntroCinematic
   let phase: Phase = 'loading'
   let progress = 0, phaseTime = 0
   let exiting = false
+  // Auto-play: once the intro is interactive (idle) and the visitor still hasn't
+  // engaged, the cinematic starts itself after this delay so the welcome
+  // animation always plays. Cleared the instant any start (manual or auto) fires.
+  const AUTO_START_MS = 2000
+  let autoStartTimer = 0
 
   let geo!: THREE.BufferGeometry
   let posAttr!: Float32Array, colAttr!: Float32Array
@@ -485,6 +490,7 @@ export function mountIntroCinematic(opts: IntroCinematicOptions): IntroCinematic
   // ----- Interaction → run the cinematic (once) -----
   function startCinematic() {
     if (phase !== 'idle') return
+    window.clearTimeout(autoStartTimer)
     phase = 'compress'; phaseTime = 0; progress = 0
     overlay.classList.add('is-starting')
   }
@@ -634,7 +640,15 @@ export function mountIntroCinematic(opts: IntroCinematicOptions): IntroCinematic
   Promise.all([
     sampleGlb(`${BASE}assets/NevulaLogo3DText.glb`, params.count, WORDMARK_EXTENT),
     sampleGlb(`${BASE}assets/NevulaLogo3D.glb`, params.count, V_EXTENT, GLB_SKIP),
-  ]).then(([w, v]) => { word = w; vMark = v; if (!disposed && phase === 'loading') phase = 'idle' })
+  ]).then(([w, v]) => {
+    word = w; vMark = v
+    if (!disposed && phase === 'loading') {
+      phase = 'idle'
+      // Arm the auto-play timer now that the intro is interactive; any user
+      // input (scroll/click/key/touch) reaches startCinematic first and clears it.
+      autoStartTimer = window.setTimeout(startCinematic, AUTO_START_MS)
+    }
+  })
     .catch(err => {
       // Never strand the user on the intro — fall straight through to chapter 0.
       console.error('[nevula] intro cinematic GLB load failed; skipping intro', err)
@@ -655,6 +669,7 @@ export function mountIntroCinematic(opts: IntroCinematicOptions): IntroCinematic
       disposed = true
       cancelAnimationFrame(rafId)
       window.clearTimeout(hintTimer)
+      window.clearTimeout(autoStartTimer)
       exitTween?.kill()
       window.removeEventListener('wheel', onInteract)
       window.removeEventListener('touchstart', onInteract)

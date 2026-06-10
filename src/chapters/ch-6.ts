@@ -28,6 +28,17 @@ export function renderChapter6(): HTMLElement {
             </a>
             <a href="${import.meta.env.BASE_URL}platform/station/index.html" target="_blank" rel="noopener" data-demo-link class="nv-btn nv-btn-ghost">Explore the demo</a>
           </div>
+
+          <div class="closing-contact">
+            <div class="cc-item">
+              <span class="cc-label"><span class="dot"></span>Email</span>
+              <a class="cc-value" href="mailto:info@nevula.com">info@nevula.com</a>
+            </div>
+            <div class="cc-item">
+              <span class="cc-label"><span class="dot"></span>Corporate office</span>
+              <address class="cc-value">General Salvador Alvarado N&deg; 8, Corporativo Quantum, Piso 5, Interior 507 y 508<br/>Colonia Hip&oacute;dromo Condesa, Delegaci&oacute;n Cuauht&eacute;moc, M&eacute;xico D.F. CP 06100</address>
+            </div>
+          </div>
         </div>
       </div>
     </section>

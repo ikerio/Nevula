@@ -201,31 +201,6 @@
   color: var(--ink-300);
 }
 
-/* Index numeral — top-left overlay, white with shadow + orange tick
-   underneath (the tick has its own glow). */
-.ch-5 .fc .pix {
-  position: absolute;
-  top: 12px;
-  left: 14px;
-  z-index: 2;
-  font-family: var(--font-display);
-  font-size: 34px;
-  font-weight: 300;
-  letter-spacing: -0.04em;
-  line-height: 1;
-  color: rgba(255, 255, 255, 0.92);
-  text-shadow: 0 2px 14px rgba(10, 15, 31, 0.40);
-}
-.ch-5 .fc .pix::after {
-  content: "";
-  display: block;
-  width: 22px;
-  height: 1px;
-  background: var(--orange-500);
-  box-shadow: 0 0 8px var(--orange-500);
-  margin-top: 6px;
-}
-
 /* Role pill — top-right overlay, translucent dark with backdrop blur. */
 .ch-5 .fc .prole {
   position: absolute;
@@ -458,7 +433,6 @@
   .ch-5 .fc .meta { padding: 12px 14px 14px; }
   .ch-5 .fc .name { font-size: 17px; }
   .ch-5 .fc .tag { font-size: 12px; }
-  .ch-5 .fc .pix { font-size: 28px; top: 10px; left: 12px; }
   .ch-5 .fc .foot { margin-top: 10px; padding-top: 10px; }
 }
 
