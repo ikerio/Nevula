@@ -1,5 +1,11 @@
 import { defineConfig } from 'vite'
 
+// `process` is provided by Node when this config is evaluated, but the project
+// intentionally has no @types/node (it's a browser app — pulling Node types in
+// would also leak globals like NodeJS's setTimeout return type into the `src`
+// build). Declare just the bit we read here so `tsc -b` passes in a clean CI.
+declare const process: { env: Record<string, string | undefined> }
+
 export default defineConfig({
   root: '.',
   publicDir: 'public',
