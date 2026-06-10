@@ -27,9 +27,13 @@ export function NevulaBackground(opts: SlotOptions = {}): FieldHandle {
   const slot = makeSlot(shared.renderer.getPixelRatio(), slotOpts)
   shared.backgroundSlot = slot
 
-  // Post-FX composer wraps this slot's scene + camera.
-  const composer = createComposer(shared.renderer, slot.scene, slot.camera)
-  attachComposer(composer)
+  // Post-FX composer wraps this slot's scene + camera. Skipped when postFx is
+  // false (mobile): with no composer attached, sharedTick() renders the slot
+  // raw, dropping the expensive bloom + tonemap passes entirely.
+  if (slot.opts.postFx) {
+    const composer = createComposer(shared.renderer, slot.scene, slot.camera)
+    attachComposer(composer)
+  }
 
   if (slot.opts.interactive) {
     window.addEventListener('pointermove', e => {

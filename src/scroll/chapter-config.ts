@@ -29,6 +29,7 @@ export const CHAPTERS: ChapterConfig[] = [
   // { key: 'builtfor',    state: 'device',        scale: 1.05, offset: [-0.55, 0.05],               label: 'Built for' },
   // { key: 'traction',    state: 'traction',      scale: 1.00, offset: [0.00,  0.00],               label: 'Traction' },
   // { key: 'manifesto',   state: 'nebula',        scale: 1.10, offset: [0.00,  0.00],               label: 'Ecosystem' },
+  { key: 'modular',     state: 'trails',        scale: 0.90, offset: [0.55,  0.00],               label: 'Modular' },
   { key: 'founders',    state: 'nebula',        scale: 0.85, offset: [0,    -0.20],               label: 'Founders' },
   { key: 'closing',     state: 'logo',          scale: 1.15, offset: [0,     0],     size: 0.030, label: 'Get started' },
 ]

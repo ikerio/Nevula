@@ -153,6 +153,130 @@ body {
 }
 .nv-nav .cta:hover { background: white; color: var(--ink-100); }
 
+/* --- Mobile section menu (hamburger) ---
+   Hidden on desktop (the right rail handles section nav). At ≤820px the CTA is
+   swapped for this button, which opens a compact section dropdown. */
+.nv-menu-btn {
+  display: none; /* shown only at ≤820px (see the mobile block) */
+  position: relative;
+  z-index: 2;    /* stays above the menu scrim so it can toggle closed */
+  pointer-events: auto;
+  width: 42px;
+  height: 42px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-sm);
+  background: rgba(255, 255, 255, 0.7);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  color: var(--ink-200);
+  cursor: pointer;
+}
+.nv-menu-btn .bars { display: grid; gap: 4px; width: 18px; }
+.nv-menu-btn .bars i {
+  height: 1.5px;
+  background: currentColor;
+  border-radius: 1px;
+  transition: transform 0.26s var(--ease-out), opacity 0.2s var(--ease-out);
+}
+/* Hamburger → X when open. */
+.nv-nav.is-menu-open .nv-menu-btn .bars i:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
+.nv-nav.is-menu-open .nv-menu-btn .bars i:nth-child(2) { opacity: 0; }
+.nv-nav.is-menu-open .nv-menu-btn .bars i:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
+
+.nv-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 1; /* within the nav's stacking context (z:60), above page content */
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.24s var(--ease-out), visibility 0s linear 0.24s;
+}
+.nv-nav.is-menu-open .nv-menu {
+  pointer-events: auto;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.24s var(--ease-out);
+}
+.nv-menu-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 15, 31, 0.18);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+}
+.nv-menu-panel {
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 0px) + 54px);
+  right: max(14px, env(safe-area-inset-right));
+  width: min(264px, calc(100vw - 28px));
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-md);
+  -webkit-backdrop-filter: blur(16px) saturate(1.05);
+  backdrop-filter: blur(16px) saturate(1.05);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.7) inset,
+    0 24px 50px -24px rgba(10, 15, 31, 0.4);
+  transform: translateY(-8px) scale(0.98);
+  transform-origin: top right;
+  opacity: 0;
+  transition: transform 0.26s var(--ease-out), opacity 0.26s var(--ease-out);
+}
+.nv-nav.is-menu-open .nv-menu-panel { transform: none; opacity: 1; }
+.nv-menu-head {
+  margin: 6px 10px 8px;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-400);
+}
+.nv-menu-panel ul { list-style: none; margin: 0; padding: 0; }
+.nv-menu-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 10px;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  color: var(--ink-200);
+  transition: background 0.15s var(--ease-out);
+}
+.nv-menu-item:hover,
+.nv-menu-item:focus-visible { background: rgba(10, 15, 31, 0.04); outline: none; }
+.nv-menu-item .ix {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--ink-400);
+}
+.nv-menu-item .nm {
+  flex: 1;
+  font-family: var(--font-display);
+  font-size: 14.5px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--ink-100);
+}
+.nv-menu-item .go {
+  color: var(--ink-500);
+  opacity: 0;
+  transition: opacity 0.15s var(--ease-out), transform 0.2s var(--ease-out);
+}
+.nv-menu-item:hover .go,
+.nv-menu-item:focus-visible .go { opacity: 1; transform: translateX(2px); }
+.nv-menu-item.is-current { background: rgba(255, 102, 0, 0.08); }
+.nv-menu-item.is-current .ix { color: var(--orange-500); }
+.nv-menu-item.is-current .go { opacity: 1; color: var(--orange-500); }
+
 /* --- Progress rail (right side) --- */
 .nv-rail {
   position: fixed;
@@ -686,23 +810,74 @@ body {
     display: block;
     pointer-events: auto;
   }
+
+  /* The scroll engine doesn't run on mobile, so it never writes the per-frame
+     intensity vars. Pin them to their "fully arrived" values here. Because the
+     engine only ever set --i on the [data-chapter] section and children read it
+     via var(--i, …) (which INHERITS), this single rule lands every chapter's
+     entry animation at its final, visible state — no per-element opacity/
+     translate overrides needed. Per-chapter CSS still has to put the absolutely
+     positioned `.layout` back in flow (see each ch-N.css). */
   .nv-chapter {
+    --i: 1;
+    --d: 0;
+    --pre: 1;
+    --post: 0;
     position: relative;
     inset: auto;
     opacity: 1 !important;
     transform: none !important;
-    min-height: 100vh;
-    padding: 96px 24px;
+    min-height: 100vh;   /* fallback for browsers without dvh */
+    min-height: 100dvh;  /* tracks the mobile URL-bar collapse */
+    padding: 84px 20px max(40px, env(safe-area-inset-bottom));
+    padding-left: max(20px, env(safe-area-inset-left));
+    padding-right: max(20px, env(safe-area-inset-right));
     pointer-events: auto !important;
   }
   .nv-chapter + .nv-chapter { border-top: 1px solid var(--line-hair); }
   .nv-frame { padding: 0; }
-  /* Hide cinematic chrome on mobile */
+
+  /* Hide cinematic chrome — the page is a normal scroll now. */
   .nv-rail,
   .nv-counter,
   .nv-scroll-hint,
   .nv-audio { display: none !important; }
-  .nv-nav { opacity: 1 !important; transform: none !important; }
+
+  /* Brand stays; the "Request brief" CTA is dropped in favour of a section
+     menu (the rail is hidden on mobile). Clear the notch. */
+  .nv-nav {
+    opacity: 1 !important;
+    transform: none !important;
+    height: auto;
+    padding: max(10px, env(safe-area-inset-top)) 16px 10px;
+  }
+  .nv-nav .cta { display: none; }
+  .nv-menu-btn { display: inline-flex; }
+
+  /* Shared type — ease the big desktop clamps down at phone width. Safe to set
+     globally here: every chapter is a single stacked column on mobile, so a
+     uniform cap reads consistently (per-chapter tweaks live in each ch-N.css). */
+  .nv-title.size-xl { font-size: clamp(40px, 13vw, 64px); }
+  .nv-title.size-l  { font-size: clamp(32px, 10vw, 52px); }
+  .nv-title.size-m  { font-size: clamp(26px, 7.5vw, 40px); }
+  .nv-lede-lead { font-size: clamp(16px, 4.4vw, 20px); }
+  .nv-lede { font-size: clamp(14px, 4vw, 17px); }
+  .hero-chip { font-size: 10.5px; padding: 6px 12px; }
+
+  /* Primary CTAs stack full-width for easy tapping. */
+  .nv-ctas {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .nv-ctas .nv-btn { justify-content: center; }
+
+  /* Closing stat strip → single column. */
+  .nv-stat-strip {
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
   /* Orbits + tiles become inline stacks */
   .nv-orbit,
   .nv-tile {

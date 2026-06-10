@@ -44,6 +44,7 @@ const DEFAULTS: Required<SlotOptions> = {
   fogColor: 0xe6e8ef,
   fogDensity: 0,
   backgroundFx: false,
+  postFx: true,
 }
 
 /** Builds the geometry, material, points (and optional lineSegs) for a slot. */

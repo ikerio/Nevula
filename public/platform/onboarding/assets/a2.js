@@ -38,13 +38,13 @@
     pin: '<circle cx="12" cy="11" r="2.5"/><path d="M12 21c4-4.5 7-8 7-11a7 7 0 0 0-14 0c0 3 3 6.5 7 11"/>',
     bell: '<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>',
     clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    leaf: '<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/>',
   };
 
   const PARTNERS = [
     { id: "central", icon: P.target, es: "Central de Monitoreo", en: "Monitoring Central", des: { es: "Orquestación de eventos, validación de alertas y despacho de respuesta.", en: "Event orchestration, alert validation and response dispatch." } },
     { id: "integ", icon: P.chip, es: "Integrador Tecnológico", en: "Tech Integrator", des: { es: "Diseño e instalación de infraestructura de seguridad certificada.", en: "Design and install of certified security infrastructure." } },
-    { id: "fab", icon: P.factory, es: "Fabricante", en: "Manufacturer", des: { es: "Hardware y software con protocolos de integración nativa Nevula.", en: "Hardware and software with native Nevula integration protocols." } },
-    { id: "emer", icon: P.shield, es: "Prestador de Emergencia", en: "Emergency Provider", des: { es: "Unidades de respuesta física, servicios médicos y asistencia en sitio.", en: "Physical response units, medical services and on-site assistance." } },
+    { id: "emer", icon: P.shield, es: "Prestador de Asistencia", en: "Assistance Provider", des: { es: "Unidades de respuesta física, servicios médicos y asistencia en sitio.", en: "Physical response units, medical services and on-site assistance." } },
   ];
 
   // ============================ PROFILE CONFIGS ============================
@@ -58,8 +58,8 @@
   const PROFILES = {
     // ---------------- CENTRAL DE MONITOREO ----------------
     central: {
-      steps: [["Registro", "Registration"], ["Organización", "Organization"], ["Operación", "Operations"], ["Tecnología", "Technology"], ["Revisión", "Review"]],
-      defaults: { sel: { channels: ["call", "wa", "push"], services: ["senior", "panic", "ambul"], conn: ["lte", "wifi", "api"], resil: ["redund", "energy"] }, single: { volume: "medium" }, sliders: { val: 45, notif: 30, coord: 150 } },
+      steps: [["Registro", "Registration"], ["Organización", "Organization"], ["Revisión", "Review"]],
+      defaults: { sel: { channels: ["call", "wa", "push"], services: ["home", "industrial", "monsol"], conn: ["lte", "wifi", "api"], resil: ["redund", "energy"] }, single: { volume: "medium" }, sliders: { val: 45, notif: 30, coord: 150 } },
       org: { crumb: { es: "Configuración · Organización", en: "Setup · Organization" }, title: { es: "Configura tu central de monitoreo", en: "Configure your monitoring central" }, sub: { es: "Define tu alcance, canales y los servicios que orquestarás en la red.", en: "Define your reach, channels and the services you'll orchestrate in the network." }, secs: [
         { kind: "label", n: "A", es: "Cobertura operativa", en: "Operational coverage" },
         { kind: "badges", items: ["CDMX", "Edo. de México", "Querétaro", "Puebla"] },
@@ -67,10 +67,14 @@
         { kind: "ch", group: "channels", items: [{ id: "call", icon: P.call, es: "Llamada", en: "Call" }, { id: "wa", icon: P.wa, es: "WhatsApp", en: "WhatsApp" }, { id: "push", icon: P.push, es: "Push móvil", en: "Mobile push" }, { id: "sms", icon: P.sms, es: "SMS", en: "SMS" }] },
         { kind: "label", n: "C", es: "Servicios que orquestarás", en: "Services you'll orchestrate" },
         { kind: "pick", group: "services", multi: true, cols: 2, items: [
-          { id: "senior", icon: P.wave, es: "Monitoreo de adultos mayores", en: "Senior monitoring", des: { es: "Asistencia geriátrica proactiva.", en: "Proactive geriatric assistance." } },
-          { id: "panic", icon: P.shield, es: "Botón de pánico", en: "Panic button", des: { es: "Respuesta SOS inmediata.", en: "Immediate SOS response." } },
-          { id: "ambul", icon: P.ambulance, es: "Coordinación con ambulancia", en: "Ambulance coordination", des: { es: "Integración con prestadores de salud.", en: "Integration with health providers." } },
-          { id: "access", icon: P.lock, es: "Gestión de acceso", en: "Access management", des: { es: "Apertura remota y perímetros.", en: "Remote opening and perimeters." } },
+          { id: "home", icon: P.home, es: "Monitoreo de hogar y retail", en: "Home and retail monitoring", des: { es: "Hogares, comercios y locales.", en: "Homes, shops and storefronts." } },
+          { id: "transport", icon: P.truck, es: "Transporte y Logística", en: "Transportation & Logistics", des: { es: "Flotas, carga y rutas.", en: "Fleet, cargo and routes." } },
+          { id: "energy", icon: P.bolt, es: "Energía y Servicios", en: "Energy & Utilities", des: { es: "Red, agua y medición.", en: "Grid, water and metering." } },
+          { id: "industrial", icon: P.industry, es: "Industrial", en: "Industrial", des: { es: "Plantas, maquinaria y seguridad.", en: "Plants, machinery and safety." } },
+          { id: "agri", icon: P.leaf, es: "Agricultura y Ganadería", en: "Agriculture & Livestock", des: { es: "Campos, ganado y activos.", en: "Fields, herds and assets." } },
+          { id: "health", icon: P.wave, es: "Salud", en: "Healthcare", des: { es: "Pacientes, signos vitales e instalaciones.", en: "Patients, vitals and facilities." } },
+          { id: "weather", icon: P.cloud, es: "Clima", en: "Weather", des: { es: "Sensado ambiental y climático.", en: "Environmental and climate sensing." } },
+          { id: "monsol", icon: P.target, es: "Solución de Monitoreo", en: "Monitoring Solution", des: { es: "Monitoreo integral de Nevula.", en: "End-to-end Nevula monitoring." } },
         ] },
       ] },
       ops: { crumb: { es: "Configuración · Operación", en: "Setup · Operations" }, title: { es: "Configura tu modelo operativo", en: "Configure your operating model" }, sub: { es: "Define tiempos objetivo, prioridades, actores y reglas de escalamiento.", en: "Define target times, priorities, actors and escalation rules." }, secs: [
@@ -111,8 +115,6 @@
       review: { note: { es: "La integración con el servicio externo de ambulancias requiere validación física en campo. Se recomienda activar en modo <b>Supervisado</b> durante las primeras 48 horas.", en: "External ambulance integration requires field validation. Activate in <b>Supervised</b> mode for the first 48 hours." },
         cards: [
           { ic: P.person, t: { es: "Organización", en: "Organization" }, rows: (s) => [t("Cobertura", "Coverage") + ": 4 " + t("estados", "states"), t("Servicios", "Services") + ": " + cnt(s, "services"), t("Canales", "Channels") + ": " + cnt(s, "channels")] },
-          { ic: P.target, t: { es: "Operación", en: "Operations" }, rows: (s) => ["SLA " + t("validación", "validation") + ": " + s.sliders.val + "s", t("Notificación", "Notification") + ": " + s.sliders.notif + "s", t("Escalamiento", "Escalation") + ": 2 " + t("reglas", "rules")] },
-          { ic: P.sensor, t: { es: "Tecnología", en: "Technology" }, rows: (s) => [t("Volumen", "Volume") + ": " + cap(s.single.volume), t("Conectividad", "Connectivity") + ": " + cnt(s, "conn") + " " + t("capas", "layers"), t("Resiliencia", "Resilience") + ": " + cnt(s, "resil")] },
         ],
         checks: [[["Documentación legal", "Legal documentation"], "ok"], [["Infraestructura de red", "Network infrastructure"], "ok"], [["Zonas de cobertura", "Coverage zones"], "ok"], [["Pruebas de latencia", "Latency tests"], "warn"], [["Protocolos de emergencia", "Emergency protocols"], "ok"], [["Integración API terceros", "3rd-party API"], "warn"]] },
     },
@@ -255,6 +257,7 @@
 
   function cnt(s, g) { return (s.sel[g] && s.sel[g].size) || 0; }
   function cap(v) { return v ? v.charAt(0).toUpperCase() + v.slice(1) : "—"; }
+  function lastStep() { return PROFILES[state.partner].steps.length - 1; }
 
   // ============================ STATE ============================
   const state = { step: 0, partner: "central", sel: {}, single: {}, sliders: {}, confirmed: false };
@@ -309,7 +312,7 @@
     return head("Registro de Partner", "Partner Registration", "Únete a la Red de Partners de Nevula", "Join the Nevula Partner Network",
       "Selecciona tu perfil — la configuración se adapta a tu tipo de operación.", "Pick your profile — the setup adapts to your type of operation.") +
       '<div class="sec-label"><span class="n">A</span><span>' + t("Selecciona tu perfil de partner", "Select your partner profile") + '</span></div>' +
-      '<div class="pickgrid c4">' + PARTNERS.map((p) => pickCard("partner", false, p, state.partner === p.id)).join("") + '</div>' +
+      '<div class="pickgrid c3">' + PARTNERS.map((p) => pickCard("partner", false, p, state.partner === p.id)).join("") + '</div>' +
       '<div class="sec-label"><span class="n">B</span><span>' + t("Datos de la organización", "Organization details") + '</span></div>' +
       '<div class="formgrid">' +
       fld("Nombre comercial", "Commercial name", "Central Horizonte 24/7") +
@@ -341,7 +344,7 @@
     Object.values(state.sel).forEach((set) => s += set.size * 3);
     s += Object.keys(state.single).filter((k) => state.single[k]).length * 4;
     s += Object.keys(state.sliders).length * 2;
-    if (state.step >= 4) s = state.confirmed ? 99 : Math.max(s, 92);
+    if (state.step >= lastStep()) s = state.confirmed ? 99 : Math.max(s, 92);
     return Math.min(99, s);
   }
   const SCOREDESC = [
@@ -356,11 +359,12 @@
     const sc = score();
     document.getElementById("scoreNum").textContent = sc;
     document.getElementById("scoreBar").style.width = sc + "%";
-    const prog = (state.step + 1) * 20;
+    const prog = Math.round((state.step + 1) / p.steps.length * 100);
     document.getElementById("progPct").textContent = prog + "%";
     document.getElementById("progFill").style.width = prog + "%";
-    document.getElementById("scoreDesc").textContent = t(SCOREDESC[state.step].es, SCOREDESC[state.step].en);
-    document.getElementById("insightText").innerHTML = t(p.insights[state.step].es, p.insights[state.step].en);
+    const sdi = state.step === p.steps.length - 1 ? 4 : state.step;
+    document.getElementById("scoreDesc").textContent = t(SCOREDESC[sdi].es, SCOREDESC[sdi].en);
+    document.getElementById("insightText").innerHTML = t(p.insights[sdi].es, p.insights[sdi].en);
     document.getElementById("nextList").innerHTML = p.nexts.map((n) => '<div class="ni"><span class="nic">' + sIcon('<path d="M5 12h14M13 6l6 6-6 6"/>').replace('stroke-width="1.7"', 'stroke-width="2"') + '</span><span class="nt"><b>' + t(n[0], n[1]) + '</b></span></div>').join("");
   }
 
@@ -378,12 +382,14 @@
   const MIDDLE = ["org", "ops", "tech"];
   function renderStep() {
     const p = PROFILES[state.partner];
+    const last = p.steps.length - 1;
+    if (state.step > last) state.step = last;
     if (state.step === 0) host.innerHTML = stepRegistro();
-    else if (state.step === 4) host.innerHTML = stepReview();
+    else if (state.step === last) host.innerHTML = stepReview();
     else host.innerHTML = renderStepGeneric(p[MIDDLE[state.step - 1]]);
     wireStep();
     const next = document.getElementById("obNext").querySelector("span");
-    if (state.step === 4) { next.setAttribute("data-es", "⚡ Activar Partner"); next.setAttribute("data-en", "⚡ Activate Partner"); document.getElementById("obNext").className = "btn btn-signal"; }
+    if (state.step === last) { next.setAttribute("data-es", "Activar Partner"); next.setAttribute("data-en", "Activate Partner"); document.getElementById("obNext").className = "btn btn-signal"; }
     else { next.setAttribute("data-es", "Continuar"); next.setAttribute("data-en", "Continue"); document.getElementById("obNext").className = "btn btn-cobalt"; }
     if (window.NEV && NEV.setLang) NEV.setLang(NEV.getLang());
     renderRail(); syncMeters();
@@ -411,8 +417,8 @@
   }
   function toggle(set, id) { if (set.has(id)) set.delete(id); else set.add(id); }
 
-  function goto(i) { state.step = Math.max(0, Math.min(4, i)); renderStep(); }
-  document.getElementById("obNext").onclick = () => { if (state.step === 4) { activate(); return; } goto(state.step + 1); };
+  function goto(i) { state.step = Math.max(0, Math.min(lastStep(), i)); renderStep(); }
+  document.getElementById("obNext").onclick = () => { if (state.step === lastStep()) { activate(); return; } goto(state.step + 1); };
   document.getElementById("obPrev").onclick = () => goto(state.step - 1);
 
   function activate() {

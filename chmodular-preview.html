@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ch-modular preview harness</title>
+    <style>
+      html, body { margin: 0; height: 100%; background: #e6e8ef; overflow: hidden; }
+      #chmodular-root { position: fixed; inset: 0; }
+    </style>
+  </head>
+  <body>
+    <!-- Dev-only isolated harness for chapter 4 (Modular by design).
+         Mounts just the chapter with --i:1 and fires the chapter-enter event
+         so the 3D stage + loop run without the intro/scroll engine. Not a
+         build entry (Vite bundles only index.html for production). -->
+    <div id="chmodular-root"></div>
+    <script type="module" src="/src/chmodular-preview.ts"></script>
+  </body>
+</html>

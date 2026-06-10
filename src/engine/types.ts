@@ -41,6 +41,13 @@ export interface SlotOptions {
   fogDensity?: number
   /** Attach the cursor-FX + nebula gas-cloud layer (background slot only). */
   backgroundFx?: boolean
+  /**
+   * Wrap the background slot in the post-FX composer (UnrealBloom + ACES
+   * tonemap). Default true. Set false (mobile) to render the field raw — the
+   * bloom pass is the most expensive part of the pipeline, and skipping it
+   * roughly halves per-frame GPU cost. Only meaningful for the background slot.
+   */
+  postFx?: boolean
 }
 
 /** Cursor-parting + orchestration-edges + gas-cloud layer (background only).

@@ -78,3 +78,17 @@ body {
   text-transform: uppercase;
   color: var(--ink-400);
 }
+
+/* — Mobile grain — `background-attachment: fixed` forces a full-screen repaint
+   on every scroll frame on phones (visible jank). The grain layers are already
+   `position: fixed`, so switching attachment to `scroll` is visually identical
+   but lets the compositor scroll cheaply. Dial the texture back a touch too. */
+@media (max-width: 820px) {
+  .grain {
+    background-attachment: scroll;
+    opacity: 0.4;
+  }
+  .grain::after {
+    background-attachment: scroll;
+  }
+}

@@ -15,6 +15,7 @@
  */
 
 import type { NvChapterEvent } from '../lib/events'
+import { isMobile } from '../lib/responsive'
 import type { SurfaceController } from './ch-3-surfaces/types'
 import { mountMarketplace } from './ch-3-surfaces/marketplace'
 import { mountStation } from './ch-3-surfaces/station'
@@ -57,8 +58,12 @@ export function initPpConsole(): PpConsoleHandle | null {
   const rail = Array.from(document.querySelectorAll<HTMLElement>('.pp-surf'))
   const views = Array.from(document.querySelectorAll<HTMLElement>('.pp-view'))
 
+  // Mobile renders the console as a single static frame: the auto-loop is gated
+  // on `nv:chapter`, which never fires without the scroll engine, so `active`
+  // stays false and no surface timer/RAF ever starts. Treat it like
+  // reduced-motion so the (unused) surface crossfade can't introduce jank.
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  if (reduce) document.querySelector('.pp-console')?.classList.add('pp-reduce')
+  if (reduce || isMobile()) document.querySelector('.pp-console')?.classList.add('pp-reduce')
 
   // Mount per-surface controllers (only Marketplace is real so far; Station and
   // Console are still placeholder views with no controller).

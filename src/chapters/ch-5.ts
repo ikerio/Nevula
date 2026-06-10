@@ -286,11 +286,11 @@ function renderCard(f: Founder, i: number): string {
 
 export function renderChapter5(): HTMLElement {
   const root = htmlEl(`
-    <section class="nv-chapter ch-5" data-chapter="4" data-screen-label="04 Founders">
+    <section class="nv-chapter ch-5" data-chapter="5" data-screen-label="05 Founders">
       <div class="layout">
         <div class="ch5-head">
           <div class="nv-eyebrow">
-            <span class="num">04</span>
+            <span class="num">05</span>
             <span class="bar"></span>
             <span>The Team</span>
           </div>

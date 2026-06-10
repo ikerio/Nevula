@@ -456,28 +456,52 @@
 .ch-1 .use-card:nth-child(4) { transition-delay: 280ms; transform: translateY(calc((1 - var(--i, 0)) * 30px)); }
 
 @media (max-width: 820px) {
+  /* Put the absolutely-positioned layout back in flow (otherwise the chapter
+     has no in-flow content and collapses to ~48px wide) and let the head, the
+     expanded panel, and the card strip stack naturally. */
   .ch-1 .layout {
+    position: static;
     display: block;
-    padding: 96px 24px 64px;
+    padding: 0;
   }
-  .ch-1 .use-strip {
-    position: relative;
-    bottom: auto;
-    left: auto;
-    right: auto;
-    grid-template-columns: 1fr 1fr;
-    margin-top: 32px;
-  }
-  .ch-1 .up-stats {
-    grid-template-columns: 1fr 1fr;
-  }
-  /* On mobile the collapsible head text isn't driven by the (desktop-only)
-     card-expansion, so lift the max-height clamps that could crop longer copy
-     when it wraps in the narrow column. */
+  .ch-1 .ch1-head { transform: none; }
+  .ch-1 .ch1-head::before { inset: -14px -18px; }
+  /* Card-expansion is desktop-only choreography, so lift the collapsible
+     clamps + column max-widths that would crop or pinch copy here. */
   .ch-1 .ch1-head .nv-lede,
   .ch-1 .ch1-head .nv-lede-lead,
   .ch-1 .ch1-head .hero-chips {
     max-height: none;
     overflow: visible;
+    max-width: none;
   }
+  /* Expanded panel flows in below the head (desktop anchors it absolutely at a
+     vh-based top). Inactive panels are display:none so they reserve no space. */
+  .ch-1 .use-panel {
+    position: static;
+    display: none;
+    width: auto;
+    max-width: 100%;
+    margin-top: 24px;
+    top: auto;
+    left: auto;
+    transform: none;
+  }
+  .ch-1 .use-panel.is-active { display: flex; transform: none; }
+  .ch-1 .up-lede { max-width: none; }
+  .ch-1 .up-stats { grid-template-columns: 1fr 1fr; }
+  /* Card strip → single-column list of full-width tap targets. */
+  .ch-1 .use-strip {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    right: auto;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-top: 28px;
+    transform: none;
+  }
+  /* Desktop-only affordances (geometry-anchored). */
+  .ch-1 .use-connector,
+  .ch-1 .chip-overlays { display: none; }
 }

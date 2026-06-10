@@ -26,6 +26,8 @@ import {
 } from 'postprocessing'
 import gsap from 'gsap'
 import { htmlEl } from '../lib/dom'
+import { isMobile } from '../lib/responsive'
+import { introCamZ } from '../lib/cinematic-fit'
 import '../styles/intro-cinematic.css'
 
 export interface IntroCinematic {
@@ -233,9 +235,11 @@ type Phase = 'loading' | 'idle' | 'compress' | 'hold' | 'implode' | 'explode' | 
 
 export function mountIntroCinematic(opts: IntroCinematicOptions): IntroCinematic {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  // Mobile lightens the intro: ~1/3 the particles, DPR 1, and no bloom (below).
+  const mobile = isMobile()
 
   const params = {
-    count: 4500,
+    count: mobile ? 1500 : 4500,
     nebulaSpread: 0.85,
     compressDuration: 1.6,
     compressGamma: 2.6,
@@ -280,18 +284,30 @@ export function mountIntroCinematic(opts: IntroCinematicOptions): IntroCinematic
   // ----- Renderer / scene / camera / post-FX (matches production opening) -----
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false, powerPreference: 'high-performance' })
   renderer.setClearColor(0x000000, 0)
-  const DPR = Math.min(window.devicePixelRatio, 2)
+  const DPR = Math.min(window.devicePixelRatio, mobile ? 1 : 2)
   renderer.setPixelRatio(DPR)
   renderer.setSize(window.innerWidth, window.innerHeight, false)
 
   const scene = new THREE.Scene()
   const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 50)
-  camera.position.z = 3.4
+  // Resting/framed camera distance for the current aspect — pulled back on
+  // narrow/portrait viewports so the wide wordmark, V, and burst stay in frame
+  // (the camera's FOV is vertical, so portrait crops horizontally). The dolly +
+  // shake in updateCamera() are expressed RELATIVE to this base. Recomputed on
+  // resize. `≥ 3.4` so landscape keeps the original framing.
+  let camZBase = introCamZ()
+  camera.position.z = camZBase
 
   const composer = new EffectComposer(renderer)
   composer.addPass(new RenderPass(scene, camera))
+  // `bloom` is always constructed so the explosion-flash frame logic can poke
+  // its intensity, but on mobile we don't add the bloom + tonemap EffectPass —
+  // it's the priciest part of the intro render. The RenderPass alone still
+  // writes the scene to the canvas; the intensity writes become harmless no-ops.
   const bloom = new BloomEffect({ intensity: BLOOM_BASE, luminanceThreshold: 0.10, luminanceSmoothing: 0.40, kernelSize: KernelSize.MEDIUM, mipmapBlur: true })
-  composer.addPass(new EffectPass(camera, bloom, new ToneMappingEffect({ mode: ToneMappingMode.ACES_FILMIC })))
+  if (!mobile) {
+    composer.addPass(new EffectPass(camera, bloom, new ToneMappingEffect({ mode: ToneMappingMode.ACES_FILMIC })))
+  }
   composer.setSize(window.innerWidth, window.innerHeight)
 
   const uniforms = {
@@ -346,7 +362,7 @@ export function mountIntroCinematic(opts: IntroCinematicOptions): IntroCinematic
   ringMesh.position.z = 0; ringMesh.renderOrder = 5; ringMesh.frustumCulled = false; ringMesh.visible = false; scene.add(ringMesh)
   let ringT = 0
 
-  let camZ = 3.55, shakeAmt = 0, flashV = 0
+  let camZ = camZBase + 0.15, shakeAmt = 0, flashV = 0
 
   // ----- State buffers + phase machine -----
   let phase: Phase = 'loading'
@@ -446,10 +462,16 @@ export function mountIntroCinematic(opts: IntroCinematicOptions): IntroCinematic
   }
 
   function updateCamera(dt: number) {
-    let zT = 3.4
-    if (phase === 'idle') zT = 3.55
-    else if (phase === 'compress') zT = 3.55 - Math.pow(progress, params.compressGamma) * params.camPushIn
-    else if (phase === 'hold' || phase === 'implode') zT = 3.55 - params.camPushIn
+    // Dolly is expressed relative to camZBase and scaled by it, so the idle pull
+    // and the compression push-in feel the same at any viewport aspect (a fixed
+    // world-unit push would barely register at the larger portrait distance).
+    const k = camZBase / 3.4
+    const idle = 0.15 * k
+    const push = params.camPushIn * k
+    let zT = camZBase
+    if (phase === 'idle') zT = camZBase + idle
+    else if (phase === 'compress') zT = camZBase + idle - Math.pow(progress, params.compressGamma) * push
+    else if (phase === 'hold' || phase === 'implode') zT = camZBase + idle - push
     camZ += (zT - camZ) * 0.06
     shakeAmt *= Math.max(0, 1 - dt * 7)
     camera.position.set((Math.random() - 0.5) * shakeAmt, (Math.random() - 0.5) * shakeAmt, camZ)
@@ -623,7 +645,7 @@ export function mountIntroCinematic(opts: IntroCinematicOptions): IntroCinematic
 
   const onResize = () => {
     const W = window.innerWidth, H = window.innerHeight
-    renderer.setSize(W, H, false); composer.setSize(W, H); camera.aspect = W / H; camera.updateProjectionMatrix()
+    renderer.setSize(W, H, false); composer.setSize(W, H); camera.aspect = W / H; camera.updateProjectionMatrix(); camZBase = introCamZ()
   }
   window.addEventListener('resize', onResize)
 

@@ -56,3 +56,26 @@
 .ch-6 .nv-stat-strip .cell .v { font-size: 32px; }
 .ch-6 .nv-stat-strip .cell .v .u { font-size: 11px; }
 .ch-6 .nv-ctas { margin-top: 36px; }
+
+/* Mobile — layout back in flow + centered like the opening; the 4-cell stat
+   strip becomes 2×2 (it's more specific than the shared 1-col rule in
+   layout.css, so it has to be re-stated here). */
+@media (max-width: 820px) {
+  .ch-6 .layout {
+    position: static;
+    padding: 0;
+    min-height: calc(100dvh - 132px);
+  }
+  .ch-6 .closing-text {
+    transform: none;
+    max-width: none;
+  }
+  .ch-6 .closing-tags {
+    gap: 14px 24px;
+    margin-top: 20px;
+  }
+  .ch-6 .nv-stat-strip {
+    grid-template-columns: 1fr 1fr;
+    margin-top: 28px;
+  }
+}

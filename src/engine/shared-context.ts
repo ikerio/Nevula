@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import type { EffectComposer } from 'postprocessing'
 import type { SlotInternal } from './types'
 import { updateSlot } from './slot'
+import { isMobile } from '../lib/responsive'
 
 interface SharedContext {
   canvas: HTMLCanvasElement
@@ -38,7 +39,10 @@ export function ensureShared(): SharedContext {
     preserveDrawingBuffer: true,
   })
   renderer.setClearColor(0x000000, 0)
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+  // Cap device-pixel-ratio lower on mobile (1.5 vs 2): rendering fewer physical
+  // pixels is one of the cheapest, highest-impact GPU savings on phones, which
+  // routinely report DPR 2.5–3+.
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile() ? 1.5 : 2))
   renderer.autoClear = false
 
   const clock = new THREE.Clock()

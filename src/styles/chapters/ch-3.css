@@ -100,6 +100,15 @@
   line-height: 1.45;
 }
 
+/* Demo CTA (left column, under the stat strip) — opens the platform demo. */
+.ch-3 .pp-cta {
+  margin-top: 26px;
+  opacity: var(--i, 0);
+  transform: translateY(calc((1 - var(--i, 0)) * 10px));
+  transition: opacity 280ms var(--ease-out), transform 280ms var(--ease-out);
+  transition-delay: 300ms;
+}
+
 /* === Console stage (RIGHT column) === */
 .ch-3 .pp-stage {
   position: relative;
@@ -364,10 +373,27 @@
 .pp-replay svg { width: 14px; height: 14px; }
 
 @media (max-width: 820px) {
+  /* Layout back in flow (else the chapter collapses): head over the console. */
   .ch-3 .layout {
+    position: static;
     display: block;
-    padding: 96px 24px 64px;
+    padding: 0;
   }
-  .ch-3 .pp-stage { max-height: none; height: auto; margin-top: 28px; }
-  .pp-console { height: 540px; }
+  .ch-3 .pp-head { transform: none; }
+  .ch-3 .pp-head::before { inset: -14px -18px; }
+  .ch-3 .pp-head .nv-lede { max-width: none; }
+  .ch-3 .pp-stats { max-width: none; }
+  .ch-3 .pp-stage {
+    max-height: none;
+    height: auto;
+    margin-top: 28px;
+    transform: none;
+  }
+  /* The console renders as a single static frame on mobile (the auto-loop never
+     starts — see ch-3-console.ts). Size it to the column and cap its height; the
+     surfaces inside scroll. */
+  .pp-console { height: min(70vh, 560px); }
+  /* The replay control hangs outside the frame on desktop — tuck it in so it
+     isn't clipped at the screen edge. */
+  .pp-replay { top: 8px; right: 8px; }
 }

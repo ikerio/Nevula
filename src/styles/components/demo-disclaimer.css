@@ -1,0 +1,84 @@
+/* Demo disclaimer — interstitial modal shown before a preview/demo link opens.
+   Matches the founder dossier overlay conventions (scrim + frosted panel,
+   body scroll-lock via body.dd-open). Sits above all chrome (nav/rail). */
+
+body.dd-open { overflow: hidden; }
+
+.dd-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: rgba(10, 15, 31, 0.42);
+  backdrop-filter: blur(9px);
+  -webkit-backdrop-filter: blur(9px);
+  display: grid;
+  place-items: center;
+  padding: 6vh 6vw;
+  animation: dd-bd-in 220ms ease-out both;
+}
+@keyframes dd-bd-in { from { opacity: 0; } to { opacity: 1; } }
+
+.dd-panel {
+  position: relative;
+  width: min(450px, 100%);
+  background: var(--bg-elev);
+  border: 1px solid var(--line-soft);
+  border-radius: 18px;
+  padding: 28px 30px 24px;
+  text-align: left;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.65) inset,
+    0 50px 100px -36px rgba(10, 15, 31, 0.5);
+  outline: none;
+  animation: dd-panel-in 300ms var(--ease-out) both;
+}
+@keyframes dd-panel-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.985); }
+  to   { opacity: 1; transform: none; }
+}
+
+.dd-head { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+.dd-ic {
+  width: 42px; height: 42px; flex: none;
+  border-radius: 12px;
+  display: grid; place-items: center;
+  background: rgba(0, 82, 156, 0.08);
+  border: 1px solid rgba(0, 82, 156, 0.18);
+  color: var(--cobalt-500);
+}
+.dd-ic svg { width: 22px; height: 22px; }
+.dd-kicker {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: var(--font-mono);
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--orange-500);
+}
+.dd-kicker .dd-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--orange-500); box-shadow: 0 0 6px var(--orange-500); }
+
+.dd-title {
+  font-family: var(--font-display);
+  font-size: 25px; line-height: 1.12; letter-spacing: -0.02em;
+  font-weight: 600; color: var(--ink-100);
+  margin: 0 0 12px;
+}
+.dd-title em { font-style: normal; color: var(--cobalt-500); }
+
+.dd-body {
+  font-family: var(--font-display);
+  font-size: 13.5px; line-height: 1.6;
+  color: var(--ink-300);
+  margin: 0;
+}
+
+.dd-actions {
+  display: flex; gap: 10px; justify-content: flex-end;
+  margin-top: 24px;
+}
+.dd-actions .nv-btn { font-size: 13px; padding: 11px 18px; }
+
+@media (max-width: 480px) {
+  .dd-panel { padding: 24px 22px 20px; }
+  .dd-title { font-size: 22px; }
+  .dd-actions { flex-direction: column-reverse; }
+  .dd-actions .nv-btn { width: 100%; justify-content: center; }
+}

@@ -42,9 +42,11 @@
 @media (max-width: 820px) {
   .ch-0 .layout {
     position: static;
-    /* Center the hero in the viewport minus the chapter's 96px top/bottom
-       padding, so it reads centered without overflowing past one screen. */
-    min-height: calc(100vh - 192px);
+    padding: 0;
+    /* Center the hero in the viewport minus the chapter's top/bottom padding
+       (now 84 + 40 ≈ 124px, see layout.css), so it reads centered without
+       overflowing past one screen. */
+    min-height: calc(100dvh - 132px);
   }
   .ch-0 .opening-text {
     max-width: 460px;

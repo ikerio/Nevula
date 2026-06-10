@@ -4,6 +4,7 @@ import {
   getMicroprocessorHoveredChipIndex,
   getMicroprocessorChipScreenPositions,
 } from '../engine/states/microprocessor'
+import { isMobile } from '../lib/responsive'
 import '../styles/chapters/ch-1.css'
 
 // ---------------------------------------------------------------------------
@@ -340,6 +341,11 @@ export function initChapter1Cards(field: FieldHandle): Chapter1CardsHandle {
     return { dispose: () => {} }
   }
 
+  // On mobile the field is a fixed faint backdrop (not a per-card morph target),
+  // and there's no cursor for the chip-hover overlays — so card taps only toggle
+  // the panel UI (see the guards in expand/collapse + the chip-overlay wiring).
+  const mobile = isMobile()
+
   const strip = section.querySelector<HTMLElement>('.use-strip')
   if (!strip) {
     return { dispose: () => {} }
@@ -418,6 +424,7 @@ export function initChapter1Cards(field: FieldHandle): Chapter1CardsHandle {
 
   function collapse(): void {
     clearActive()
+    if (mobile) return // panel UI only — the field is a fixed backdrop on mobile
     field.setState(CH1_DEFAULT_STATE)
     field.setScale(CH1_DEFAULT_SCALE)
     field.setSize(CH1_DEFAULT_SIZE)
@@ -434,6 +441,9 @@ export function initChapter1Cards(field: FieldHandle): Chapter1CardsHandle {
       panel.classList.add('is-active')
       panel.setAttribute('aria-hidden', 'false')
     }
+    // Mobile shows the panel only — skip the desktop expand choreography
+    // (is-expanded drives the head shrink/lift, field morph, and connector).
+    if (mobile) return
     section.classList.add('is-expanded')
     field.setState(state)
     field.setScale(CH1_EXPANDED_SCALE)
@@ -524,10 +534,14 @@ export function initChapter1Cards(field: FieldHandle): Chapter1CardsHandle {
     if (isLogisticsActive) startChipOverlays()
     else stopChipOverlays()
   }
-  // Run after every click (event bubbles up after the handler runs).
-  strip.addEventListener('click', () => requestAnimationFrame(observeForChipOverlays))
-  // Also when the chapter changes away.
-  window.addEventListener('nv:chapter', () => requestAnimationFrame(observeForChipOverlays))
+  // Chip overlays are a desktop-only enhancement (cursor hover + microprocessor
+  // raycast), so skip the wiring entirely on mobile.
+  if (!mobile) {
+    // Run after every click (event bubbles up after the handler runs).
+    strip.addEventListener('click', () => requestAnimationFrame(observeForChipOverlays))
+    // Also when the chapter changes away.
+    window.addEventListener('nv:chapter', () => requestAnimationFrame(observeForChipOverlays))
+  }
 
   return {
     dispose: () => {

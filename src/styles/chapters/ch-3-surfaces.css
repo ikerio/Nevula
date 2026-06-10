@@ -359,7 +359,9 @@
   .plan-nav button:disabled { opacity: 0.4; cursor: not-allowed; }
 }
 
-@media (max-width: 720px) {
+/* 820px (was 720) so the surfaces simplify in step with the chapter's stacked
+   mobile layout — the console frame is full-column-width by then. */
+@media (max-width: 820px) {
   .pp-views .cwrap { grid-template-columns: 1fr; }
   .pp-views .station { grid-template-columns: 1fr; }
   .pp-views .mkt-kpis, .pp-views .kpibar { grid-template-columns: repeat(2, 1fr); }
